@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<MenuItems>
+
+    <MenuItem id="killAllComms">
+        <Name>Refresh Matrix</Name>
+        <CallbackMethod>makeTheMatrix</CallbackMethod>
+    </MenuItem>
+
+</MenuItems>

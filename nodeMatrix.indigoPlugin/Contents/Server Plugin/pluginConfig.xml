@@ -1,0 +1,238 @@
+<?xml version="1.0"?>
+
+<PluginConfig>
+
+    <Field id="infoLabel0" type="label">
+        <Label>Z-Wave Node Matrix Plugin - Developed by DaveL17</Label>
+    </Field>
+
+    <Field id="space0" type="label"/>
+    <Field id="separator0" type="separator"/>
+
+    <!-- Chart Output Location -->
+    <Field id="chartPath" type="textfield" defaultValue="/Library/Application Support/Perceptive Automation/Indigo 7/IndigoWebServer/images/controls/static/neighbors.png"
+           tooltip="Enter the complete path and filename where your matrix image will be saved.">
+        <Label>Image Location:</Label>
+    </Field>
+
+    <!-- Chart Title -->
+    <Field id="chartTitle" type="textfield" defaultValue="Z-Wave Node Matrix" tooltip="Enter the title for your matrix.">
+        <Label>Main Title:</Label>
+    </Field>
+
+    <!-- X Axis Label -->
+    <Field id="xAxisLabel" type="textfield" defaultValue="node" tooltip="Enter the title for the x axis.">
+        <Label>X Label:</Label>
+    </Field>
+
+    <!-- X Axis Rotate -->
+    <Field id="xAxisRotate" type="textfield" defaultValue="0" tooltip="Enter the value to rotate tick labels (degrees.) A value of zero is no rotation.">
+        <Label>X Label Rotate:</Label>
+    </Field>
+
+    <!-- Y Axis Label -->
+    <Field id="yAxisLabel" type="textfield" defaultValue="neighbor" tooltip="Enter the title for the y axis.">
+        <Label>Y Label:</Label>
+    </Field>
+
+    <!-- Main Font Style -->
+    <Field id="fontMain" type="menu" defaultValue="Arial" tooltip="Select the font for your matrix.">
+        <Label>Font:</Label>
+        <List class="self" filter="" method="getFontList"/>
+    </Field>
+
+    <!-- Chart Title Font Size -->
+    <Field id="chartTitleFont" type="textfield" defaultValue="9" tooltip="Enter the title font size (pts.)">
+        <Label>Title Font Size:</Label>
+    </Field>
+
+    <!-- Tick LabelFont Size -->
+    <Field id="tickLabelFont" type="textfield" defaultValue="6" tooltip="Enter the tick label font size (pts.)">
+        <Label>Label Font Size:</Label>
+    </Field>
+
+    <!-- Chart Sizing -->
+    <Field id="chartManualSize" type="checkbox" defaultValue="False" tooltip="Enable to manually adjust the size of the matrix.">
+        <Label>Override Image Size</Label>
+        <Description></Description>
+    </Field>
+
+    <Field id="chartHeight" type="textfield" defaultValue="7" visibleBindingId="chartManualSize" visibleBindingValue="true"
+           tooltip="Enter the height of your matrix (inches.) To determine pixel height, multiply height and DPI.">
+        <Label>Image Height:</Label>
+    </Field>
+
+    <Field id="chartWidth" type="textfield" defaultValue="7" visibleBindingId="chartManualSize" visibleBindingValue="true"
+           tooltip="Enter the width of your matrix (inches.) To determine pixel width, multiply width and DPI.">
+        <Label>Image Width:</Label>
+    </Field>
+
+    <!-- Chart Resolution -->
+    <Field id="chartResolution" type="textfield" defaultValue="100" tooltip="Enter your preference for the resolution of your chart in DPI (100).">
+        <Label>Image DPI:</Label>
+    </Field>
+
+    <Field id="foregroundColor" type="textfield" defaultValue="#888888"
+           tooltip="Enter the color of the figure's foreground. The foreground controls the color of the text, plot borders and tick marks.">
+        <Label>Foreground Color:</Label>
+    </Field>
+
+    <Field id="backgroundColor" type="textfield" defaultValue="#000000"
+           tooltip="Enter the color of the figure's background. The background controls the color both inside and outside the plot area.">
+        <Label>Background Color:</Label>
+    </Field>
+
+    <Field id="nodeMarker" type="menu" defaultValue="." tooltip="Select the marker style (note that some marker styles do not support all configuration options.)">
+        <Label>Node Marker:</Label>
+        <List>
+            <Option value="o">Circle</Option>
+            <Option value="D">Diamond</Option>
+            <Option value="d">Diamond (Thin)</Option>
+            <Option value="h">Hexagon 1</Option>
+            <Option value="H">Hexagon 2</Option>
+            <Option value="-">Horizontal Line</Option>
+            <Option value="8">Octagon</Option>
+            <Option value="p">Pentagon</Option>
+            <Option value=",">Pixel</Option>
+            <Option value="+">Plus</Option>
+            <Option value=".">Point</Option>
+            <Option value="*">Star</Option>
+            <Option value="s">Square</Option>
+            <Option value="|">Vertical Line</Option>
+            <Option value="x">X</Option>
+        </List>
+    </Field>
+
+    <Field id="nodeColor" type="textfield" defaultValue="#FFFFFF" tooltip="Enter the color for each neighbor plot.">
+        <Label>Node Color:</Label>
+    </Field>
+
+    <Field id="nodeMarkerEdgewidth" type="menu" defaultValue="1.0" tooltip="Select the width of the border that will be applied to each marker.">
+        <Label>Node Border Width:</Label>
+        <List>
+            <Option value="0">None</Option>
+            <Option value="0.5">Thin*</Option>
+            <Option value="1.0">Thick</Option>
+            <Option value="1.5">Very Thick</Option>
+            <Option value="2.0">Super Thick</Option>
+        </List>
+    </Field>
+
+    <Field id="nodeBorderColor" type="textfield" defaultValue="#66FF00" tooltip="Enter the color that will be applied to each node marker border.">
+        <Label>Node Border Color:</Label>
+    </Field>
+
+    <!-- Show Legend -->
+    <Field id="showLegend" type="checkbox" defaultValue="False" tooltip="Enable to include a legend on your matrix.">
+        <Label>Show Key</Label>
+        <Description></Description>
+    </Field>
+
+    <Field id="plotLabel" type="label" alignText="right">
+        <Label>Plot these items:</Label>
+    </Field>
+
+    <Field id="separator02" type="separator"/>
+
+    <!-- Plot Unused Nodes -->
+    <Field id="plotUnusedNodes" type="checkbox" defaultValue="False" tooltip="Enable to include unused node numbers in the matrix.">
+        <Label>Unused Nodes</Label>
+        <Description></Description>
+    </Field>
+
+    <!-- Plot Self -->
+    <Field id="plotOwnNodes" type="checkbox" defaultValue="False" tooltip="Enable to plot each node's own address as a neighbor.">
+        <Label>Self as Neighbor</Label>
+        <Description></Description>
+    </Field>
+
+    <Field id="plotOwnNodesColor" type="textfield" defaultValue="#333333" visibleBindingId="plotOwnNodes" visibleBindingValue="true"
+           tooltip="Enter the color to use when plotting node values as their own neighbor">
+        <Label>Color:</Label>
+    </Field>
+
+    <Field id="highlightLabel" type="label" alignText="right">
+        <Label>Highlighted items:</Label>
+    </Field>
+
+    <Field id="separator03" type="separator"/>
+
+    <!-- Plot Battery -->
+    <Field id="plotBattery" type="checkbox" defaultValue="False" tooltip="Enable to highlight nodes that are battery-powered.">
+        <Label>Battery Devices</Label>
+        <Description></Description>
+    </Field>
+
+    <Field id="plotBatteryColor" type="textfield" defaultValue="#6600CC" visibleBindingId="plotBattery" visibleBindingValue="true"
+           tooltip="Enter the color to indicate battery operated devices.">
+        <Label>Color:</Label>
+    </Field>
+
+    <!-- Neighbors Missing Nodes -->
+    <Field id="plotNoNode" type="checkbox" defaultValue="False" tooltip="Enable to highlight neighbors that don't have a corresponding node.">
+        <Label>Invalid Neighbors</Label>
+        <Description></Description>
+    </Field>
+
+    <Field id="plotNoNodeColor" type="textfield" defaultValue="#0033FF" visibleBindingId="plotNoNode" visibleBindingValue="true"
+           tooltip="Enter the color to indicate neighbors missing nodes.">
+        <Label>Color:</Label>
+    </Field>
+
+    <!-- Plot No Node 1 -->
+    <Field id="plotNoNode1" type="checkbox" defaultValue="False" tooltip="Enable to highlight nodes that don't have node 1 in their neighbor list.">
+        <Label>Missing Neighbor 1</Label>
+        <Description></Description>
+    </Field>
+
+    <Field id="plotNoNode1Color" type="textfield" defaultValue="#FF0000" visibleBindingId="plotNoNode1" visibleBindingValue="true"
+           tooltip="Enter the color to highlight nodes that don't have node 1 in their neighbor list.">
+        <Label>Color:</Label>
+    </Field>
+
+    <!-- Plot Lost Devices -->
+    <Field id="plotLostDevices" type="checkbox" defaultValue="False" tooltip="Enable to highlight nodes haven't been updated in a specified number of days.">
+        <Label>Lost Devices</Label>
+        <Description></Description>
+    </Field>
+
+    <Field id="plotLostDevicesTimeDelta" type="textfield" defaultValue="7" visibleBindingId="plotLostDevices" visibleBindingValue="true"
+           tooltip="Enter the number of days to consider a device lost (integer.)">
+        <Label>Days:</Label>
+    </Field>
+
+    <Field id="plotLostDevicesColor" type="textfield" defaultValue="#FF0000" visibleBindingId="plotLostDevices" visibleBindingValue="true"
+           tooltip="Enter the color to highlight nodes that haven't been updated recently.">
+        <Label>Color:</Label>
+    </Field>
+
+    <Field id="space05" type="label" alignText="right">
+        <Label>Debugging:</Label>
+    </Field>
+
+    <Field id="separator04" type="separator"/>
+
+    <Field id="showDebugLevel" type="menu" defaultValue="30" tooltip="Controls the amount of debug information written to the log.">
+        <Label>Debug level:</Label>
+        <Description/>
+        <List>
+            <Option value="10">Debugging Messages</Option>
+            <Option value="20">Informational Messages</Option>
+            <Option value="30">Warning Messages</Option>
+            <Option value="40">Error Messages</Option>
+            <Option value="50">Critical Errors Only</Option>
+        </List>
+    </Field>
+
+    <Field id="space7" type="label" fontColor="black" alignWithControl="false" fontSize="small">
+        <Label>Always be careful when posting debug output to the forums or other public places. You should review it to ensure that it doesn't contain sensitive information.
+
+            Debugging Messages = Step by step plugin logging.
+            Informational Messages = Useful information about plugin health.
+            Warning Messages = Warnings about settings that may conflict.
+            Error Messages = Error messages alert you should address.
+            Critical Errors Only = Critical errors that should probably be reported.
+        </Label>
+    </Field>
+
+</PluginConfig>
