@@ -8,10 +8,7 @@ author: DaveL17
 Only tested to be compatible with matplotlib v1.5.3 and Indigo v7
 """
 
-# TODO: Add symbols for all colorblind and delete config choice.
-# TODO: Show legend entries only for those things that are turned on.
-# TODO: Get legend dots to look like chart dots.
-# TODO: The plugin is not picking up the newest devices (like the Front Porch Dimmer and the Back Porch)
+# TODO: Add indigo plugin update checker.
 
 try:
     import datetime
@@ -20,6 +17,7 @@ try:
     import matplotlib.pyplot as plt
     import numpy as np
     import indigo
+    import indigoPluginUpdateChecker
     import sys
     import traceback
 except ImportError as error:
@@ -39,9 +37,11 @@ class Plugin(indigo.PluginBase):
     def __init__(self, pluginId, pluginDisplayName, pluginVersion, pluginPrefs):
         indigo.PluginBase.__init__(self, pluginId, pluginDisplayName, pluginVersion, pluginPrefs)
 
+        self.updater = indigoPluginUpdateChecker.updateChecker(self, "https://github.com/DaveL17/ZWaveNodeMatrix/node_matrix_version.html")
         self.debugLevel = int(self.pluginPrefs.get('showDebugLevel', '30'))
         self.plugin_file_handler.setFormatter(logging.Formatter('%(asctime)s.%(msecs)03d\t%(levelname)-10s\t%(name)s.%(funcName)-28s %(msg)s', datefmt='%Y-%m-%d %H:%M:%S'))
         self.debug = True
+        self.shutdown = False
         self.indigo_log_handler.setLevel(self.debugLevel)
         self.logger.info(u"{0:=^60}".format(u" Initializing Plugin "))
 
@@ -55,8 +55,9 @@ class Plugin(indigo.PluginBase):
 
     def closedPrefsConfigUi(self, valuesDict, userCancelled):
 
-        if not userCancelled:
-            self.makeTheMatrix()
+        pass
+        # if not userCancelled:
+        #     self.makeTheMatrix()
 
     def getFontList(self, filter="", typeId=0, valuesDict=None, targetId=0):
         """Generates and returns a list of available fonts.  Note that these
@@ -152,10 +153,12 @@ class Plugin(indigo.PluginBase):
             plt.figure(figsize=(chart_height, chart_width))
 
         # Build the master dictionary of the Z-Wave Mesh Network.
-        address_list = []
-        final_devices = []
-        no_node_1 = []
-        max_addr = 0
+        address_list     = []
+        final_devices    = []
+        neighbor_list    = []
+        no_node_1        = []
+        max_addr         = 0
+        supports_battery = []
 
         # Iterate through all the Z-Wave devices and build a list.
         for dev in indigo.devices.itervalues('indigo.zwave'):
@@ -164,13 +167,15 @@ class Plugin(indigo.PluginBase):
                     neighbor_list = list(dev.globalProps['com.perceptiveautomation.indigoplugin.zwave']['zwNodeNeighbors'])
                 # This is an expected error (not every device will have all of these keys).
                 except KeyError as sub_error:
-                    pass
+                    self.pluginErrorHandler(traceback.format_exc())
+                    self.logger.threaddebug(u"{0}: {1}".format(dev.name, sub_error))
 
                 try:
                     supports_battery = dev.globalProps['com.perceptiveautomation.indigoplugin.zwave']['SupportsBatteryLevel']
                 # This is an expected error (not every device will have all of these keys).
                 except KeyError as sub_error:
-                    pass
+                    self.pluginErrorHandler(traceback.format_exc())
+                    self.logger.threaddebug(u"{0}: {1}".format(dev.name, sub_error))
 
                 last_changed = dev.lastChanged
 
@@ -227,10 +232,10 @@ class Plugin(indigo.PluginBase):
                 if plot_no_node_1 and not device[2]:
                     self.logger.info(u'Device {0} is valid, but has no neighbors. Skipping.'.format(device[0]))
                 elif plot_no_node_1 and device[2][0] != 1 and plot_unused_nodes:
-                    [no_node_1.append(int(device[5]) - 1) for neighbor in device[2]]
+                    [no_node_1.append(int(device[5]) - 1) for _ in device[2]]
 
                 elif plot_no_node_1 and device[2][0] != 1 and not plot_unused_nodes:
-                    [no_node_1.append(int(device[5]) - 1) for neighbor in device[2]]
+                    [no_node_1.append(int(device[5]) - 1) for _ in device[2]]
 
                 # This plot will show all Z-Wave neighbors on the plot.
                 if plot_unused_nodes:
@@ -309,32 +314,38 @@ class Plugin(indigo.PluginBase):
             plt.ylim(0, len(dummy_y) + 1)
 
         # =================== Legend Settings ===================
-        # Note that the legend entries must be tuples.
+        # Legend entries must be tuples.
         if show_legend:
+            legend_labels = []
+            legend_styles = []
 
             # Neighbor
-            foo1, = plt.plot([], color=node_color_border, linestyle='', marker=node_marker, markerfacecolor=node_color)
+            legend_labels.append(u"neighbor")
+            legend_styles.append(tuple(plt.plot([], color=node_color_border, linestyle='', marker=node_marker, markerfacecolor=node_color)))
 
-            # Battery
-            foo2, = plt.plot([], color=plot_battery_color, linestyle='', marker=node_marker, markerfacecolor=node_color, markeredgewidth=node_marker_edge_width,
-                             markeredgecolor=plot_battery_color)
+            if plot_battery:
+                legend_labels.append(u"battery")
+                legend_styles.append(tuple(plt.plot([], color=plot_battery_color, linestyle='', marker=node_marker, markerfacecolor=node_color, markeredgewidth=node_marker_edge_width,
+                                                    markeredgecolor=plot_battery_color)))
 
-            # Self
-            foo3, = plt.plot([], color=plot_self_color, linestyle='', marker=node_marker, markerfacecolor=plot_self_color)
+            if plot_self:
+                legend_labels.append(u"self")
+                legend_styles.append(tuple(plt.plot([], color=plot_self_color, linestyle='', marker=node_marker, markerfacecolor=plot_self_color)))
 
-            # No Node
-            foo4, = plt.plot([], color=plot_no_node_color, linestyle='', marker=node_marker, markerfacecolor=plot_no_node_color)
+            if lost_devices:
+                legend_labels.append(u"{0} ({1})".format('lost', update_delta))
+                legend_styles.append(tuple(plt.plot([], color=lost_devices_color, linestyle='', marker=node_marker, markeredgewidth=node_marker_edge_width,
+                                                    markeredgecolor=lost_devices_color, markerfacecolor=node_color)))
 
-            # No Node 1
-            foo5, = plt.plot([], color=plot_no_node_1_color, linestyle='', marker=node_marker, markerfacecolor=plot_no_node_1_color)
+            if plot_no_node:
+                legend_labels.append(u"no node")
+                legend_styles.append(tuple(plt.plot([], color=plot_no_node_color, linestyle='', marker='x', markerfacecolor=plot_no_node_color)))
 
-            # Lost Devices
-            foo6, = plt.plot([], color=lost_devices_color, linestyle='', marker=node_marker, markerfacecolor=lost_devices_color)
+            if plot_no_node_1:
+                legend_labels.append(u"no node 1")
+                legend_styles.append(tuple(plt.plot([], color=plot_no_node_1_color, linestyle='', marker='x', markerfacecolor=plot_no_node_1_color)))
 
-            legend_styles = [foo1, foo2, foo3, foo4, foo5, foo6]
-            legend_labels = [u"neighbor", u"battery", u"self", u"no node", u"no node 1", u"{0} ({1})".format('lost', update_delta)]
-            legend        = plt.legend(legend_styles, legend_labels, bbox_to_anchor=(1, 0.5), fancybox=True, loc='best', ncol=1, numpoints=1, prop={'size': 6.5})
-
+            legend = plt.legend(legend_styles, legend_labels, bbox_to_anchor=(1, 0.5), fancybox=True, loc='best', ncol=1, numpoints=1, prop={'size': 6.5})
             legend.get_frame().set_alpha(0)
             [text.set_color(font_color) for text in legend.get_texts()]
 
@@ -386,3 +397,23 @@ class Plugin(indigo.PluginBase):
             self.logger.threaddebug(u"!!! {0}".format(line))
         self.logger.threaddebug(u"!" * 80)
         # self.logger.warning(u"Error: {0}".format(sub_error[3]))
+
+    def checkVersionNow(self):
+        """ The checkVersionNow() method will call the Indigo Plugin Update
+        Checker based on a user request. """
+        self.debugLog(u"checkVersionNow() method called.")
+
+        try:
+            self.updater.checkVersionNow()
+        except Exception as error:
+            self.errorLog(u"Error checking plugin update status. Error: {0} (Line {1})".format(error, sys.exc_traceback.tb_lineno))
+            return False
+
+    def runConcurrentThread(self):
+        # While Indigo hasn't told us to shutdown
+        while self.shutdown is False:
+            self.updater.checkVersionPoll()
+            self.sleep(1)
+
+    def stopConcurrentThread(self):
+        self.shutdown = True

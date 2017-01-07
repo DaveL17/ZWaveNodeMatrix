@@ -1,0 +1,4 @@
+v0.2.4
+- Plot legend made dynamic (only selected options will be reflected).
+- Legend entries more closely mirror plot.
+- Order of legend redone to put plot elements and axis elements together.

@@ -7,7 +7,7 @@
     </Field>
 
     <Field id="space0" type="label"/>
-    <Field id="separator0" type="separator"/>
+    <Field id="separator01" type="separator"/>
 
     <!-- Chart Output Location -->
     <Field id="chartPath" type="textfield" defaultValue="/Library/Application Support/Perceptive Automation/Indigo 7/IndigoWebServer/images/controls/static/neighbors.png"
@@ -54,7 +54,7 @@
     <!-- Chart Sizing -->
     <Field id="chartManualSize" type="checkbox" defaultValue="False" tooltip="Enable to manually adjust the size of the matrix.">
         <Label>Override Image Size</Label>
-        <Description></Description>
+        <Description/>
     </Field>
 
     <Field id="chartHeight" type="textfield" defaultValue="7" visibleBindingId="chartManualSize" visibleBindingValue="true"
@@ -125,7 +125,7 @@
     <!-- Show Legend -->
     <Field id="showLegend" type="checkbox" defaultValue="False" tooltip="Enable to include a legend on your matrix.">
         <Label>Show Key</Label>
-        <Description></Description>
+        <Description/>
     </Field>
 
     <Field id="plotLabel" type="label" alignText="right">
@@ -137,13 +137,13 @@
     <!-- Plot Unused Nodes -->
     <Field id="plotUnusedNodes" type="checkbox" defaultValue="False" tooltip="Enable to include unused node numbers in the matrix.">
         <Label>Unused Nodes</Label>
-        <Description></Description>
+        <Description/>
     </Field>
 
     <!-- Plot Self -->
     <Field id="plotOwnNodes" type="checkbox" defaultValue="False" tooltip="Enable to plot each node's own address as a neighbor.">
         <Label>Self as Neighbor</Label>
-        <Description></Description>
+        <Description/>
     </Field>
 
     <Field id="plotOwnNodesColor" type="textfield" defaultValue="#333333" visibleBindingId="plotOwnNodes" visibleBindingValue="true"
@@ -160,7 +160,7 @@
     <!-- Plot Battery -->
     <Field id="plotBattery" type="checkbox" defaultValue="False" tooltip="Enable to highlight nodes that are battery-powered.">
         <Label>Battery Devices</Label>
-        <Description></Description>
+        <Description/>
     </Field>
 
     <Field id="plotBatteryColor" type="textfield" defaultValue="#6600CC" visibleBindingId="plotBattery" visibleBindingValue="true"
@@ -171,7 +171,7 @@
     <!-- Neighbors Missing Nodes -->
     <Field id="plotNoNode" type="checkbox" defaultValue="False" tooltip="Enable to highlight neighbors that don't have a corresponding node.">
         <Label>Invalid Neighbors</Label>
-        <Description></Description>
+        <Description/>
     </Field>
 
     <Field id="plotNoNodeColor" type="textfield" defaultValue="#0033FF" visibleBindingId="plotNoNode" visibleBindingValue="true"
@@ -182,7 +182,7 @@
     <!-- Plot No Node 1 -->
     <Field id="plotNoNode1" type="checkbox" defaultValue="False" tooltip="Enable to highlight nodes that don't have node 1 in their neighbor list.">
         <Label>Missing Neighbor 1</Label>
-        <Description></Description>
+        <Description/>
     </Field>
 
     <Field id="plotNoNode1Color" type="textfield" defaultValue="#FF0000" visibleBindingId="plotNoNode1" visibleBindingValue="true"
@@ -193,7 +193,7 @@
     <!-- Plot Lost Devices -->
     <Field id="plotLostDevices" type="checkbox" defaultValue="False" tooltip="Enable to highlight nodes haven't been updated in a specified number of days.">
         <Label>Lost Devices</Label>
-        <Description></Description>
+        <Description/>
     </Field>
 
     <Field id="plotLostDevicesTimeDelta" type="textfield" defaultValue="7" visibleBindingId="plotLostDevices" visibleBindingValue="true"
@@ -206,11 +206,31 @@
         <Label>Color:</Label>
     </Field>
 
-    <Field id="space05" type="label" alignText="right">
-        <Label>Debugging:</Label>
+    <Field id="updaterLabel" type="label" alignText="right">
+        <Label>Update Notification:</Label>
     </Field>
 
     <Field id="separator04" type="separator"/>
+
+    <Field id="space05" type="label" fontSize="small">
+        <Label>Receive an email alerting you to plugin updates. This sends email through Indigo, so this option must be configured as well.</Label>
+    </Field>
+
+    <Field id="updaterEmailsEnabled" type="checkbox" defaultValue="false" tooltip="Enables (disables) email notifications.">
+        <Label>Enable/Disable</Label>
+        <Description/>
+    </Field>
+
+    <Field id="updaterEmail" type="textfield" visibleBindingId="updaterEmailsEnabled" visibleBindingValue="true"
+           tooltip="Please enter the email address to receive notifications of updates to the plugin.">
+        <Label>Email address:</Label>
+    </Field>
+
+    <Field id="space06" type="label" alignText="right">
+        <Label>Debugging:</Label>
+    </Field>
+
+    <Field id="separator05" type="separator"/>
 
     <Field id="showDebugLevel" type="menu" defaultValue="30" tooltip="Controls the amount of debug information written to the log.">
         <Label>Debug level:</Label>
@@ -224,7 +244,7 @@
         </List>
     </Field>
 
-    <Field id="space7" type="label" fontColor="black" alignWithControl="false" fontSize="small">
+    <Field id="space07" type="label" fontColor="black" alignWithControl="false" fontSize="small">
         <Label>Always be careful when posting debug output to the forums or other public places. You should review it to ensure that it doesn't contain sensitive information.
 
             Debugging Messages = Step by step plugin logging.
