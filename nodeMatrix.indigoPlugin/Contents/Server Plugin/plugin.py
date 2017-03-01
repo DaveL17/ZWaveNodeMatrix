@@ -31,6 +31,42 @@ __license__   = "MIT"
 __title__     = 'Z-Wave Node Matrix Plugin'
 __version__   = '0.2.4'
 
+kDefaultPluginPrefs = {
+    u'backgroundColor': "#000000",
+    u'chartHeight': 7,
+    u'chartManualSize': False,
+    u'chartPath': "/Library/Application Support/Perceptive Automation/Indigo 7/IndigoWebServer/images/controls/static/neighbors.png",
+    u'chartResolution': 100,
+    u'chartTitle': "Z-Wave Node Matrix",
+    u'chartTitleFont': 9,
+    u'chartWidth': 7,
+    u'fontMain': "Arial",
+    u'foregroundColor': "#888888",
+    u'nodeBorderColor': "#66FF00",
+    u'nodeColor': "#FFFFFF",
+    u'nodeMarker': ".",
+    u'nodeMarkerEdgewidth': "1.0",
+    u'plotBattery': False,
+    u'plotBatteryColor': "#6600CC",
+    u'plotLostDevices': False,
+    u'plotLostDevicesColor': "#FF0000",
+    u'plotLostDevicesTimeDelta': 7,
+    u'plotNoNode': False,
+    u'plotNoNode1': False,
+    u'plotNoNode1Color': "#FF0000",
+    u'plotNoNodeColor': "#0033FF",
+    u'plotOwnNodes': False,
+    u'plotOwnNodesColor': "#333333",
+    u'plotUnusedNodes': False,
+    u'showDebugLevel': 30,
+    u'showLegend': False,
+    u'tickLabelFont': 6,
+    u'updaterEmail': "",
+    u'updaterEmailsEnabled': False,
+    u'xAxisLabel': "node",
+    u'xAxisRotate': 0,
+    u'yAxisLabel': "neighbor",
+}
 
 class Plugin(indigo.PluginBase):
 

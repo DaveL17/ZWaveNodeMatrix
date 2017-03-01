@@ -1,5 +1,7 @@
 <?xml version="1.0"?>
 
+<!-- Be sure to add any new prefs to kDefaultPluginPrefs in plugin.py -->
+
 <PluginConfig>
 
     <Field id="infoLabel0" type="label">
@@ -221,7 +223,7 @@
         <Description/>
     </Field>
 
-    <Field id="updaterEmail" type="textfield" visibleBindingId="updaterEmailsEnabled" visibleBindingValue="true"
+    <Field id="updaterEmail" type="textfield" defaultValue="" visibleBindingId="updaterEmailsEnabled" visibleBindingValue="true"
            tooltip="Please enter the email address to receive notifications of updates to the plugin.">
         <Label>Email address:</Label>
     </Field>
