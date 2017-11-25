@@ -8,31 +8,53 @@ author: DaveL17
 Only tested to be compatible with matplotlib v1.5.3 and Indigo v7
 """
 
+# =================================== TO DO ===================================
+
 # TODO: Add indigo plugin update checker.
 
+# ================================== IMPORTS ==================================
+
+# Built-in modules
+import datetime
+import logging
+import sys
+import traceback
 try:
-    import datetime
-    import logging
     import matplotlib.font_manager as fnt
     import matplotlib.pyplot as plt
     import numpy as np
-    import indigo
-    import indigoPluginUpdateChecker
-    import sys
-    import traceback
 except ImportError as error:
     logging.critical(u'Import Error: {0}'.format(error))
     sys.exit(u"The matplotlib and numpy modules are required to use this script.")
 
-__author__    = "DaveL17"
-__build__     = ""
-__copyright__ = 'Copyright 2017 DaveL17'
-__license__   = "MIT"
+# Third-party modules
+from DLFramework import indigoPluginUpdateChecker
+try:
+    import indigo
+except ImportError:
+    pass
+
+try:
+    import pydevd
+except ImportError:
+    pass
+
+# My modules
+import DLFramework.DLFramework as Dave
+
+# =================================== HEADER ==================================
+
+__author__    = Dave.__author__
+__copyright__ = Dave.__copyright__
+__license__   = Dave.__license__
+__build__     = Dave.__build__
 __title__     = 'Z-Wave Node Matrix Plugin'
-__version__   = '0.2.4'
+__version__   = '0.2.6'
+
+# =============================================================================
 
 kDefaultPluginPrefs = {
-    u'backgroundColor': "#000000",
+    u'backgroundColor': "00 00 00",
     u'chartHeight': 7,
     u'chartManualSize': False,
     u'chartPath': "/Library/Application Support/Perceptive Automation/Indigo 7/IndigoWebServer/images/controls/static/neighbors.png",
@@ -41,22 +63,22 @@ kDefaultPluginPrefs = {
     u'chartTitleFont': 9,
     u'chartWidth': 7,
     u'fontMain': "Arial",
-    u'foregroundColor': "#888888",
-    u'nodeBorderColor': "#66FF00",
-    u'nodeColor': "#FFFFFF",
+    u'foregroundColor': "88 88 88",
+    u'nodeBorderColor': "66 FF 00",
+    u'nodeColor': "FF FF FF",
     u'nodeMarker': ".",
     u'nodeMarkerEdgewidth': "1.0",
     u'plotBattery': False,
-    u'plotBatteryColor': "#6600CC",
+    u'plotBatteryColor': "66 00 CC",
     u'plotLostDevices': False,
-    u'plotLostDevicesColor': "#FF0000",
+    u'plotLostDevicesColor': "FF 00 00",
     u'plotLostDevicesTimeDelta': 7,
     u'plotNoNode': False,
     u'plotNoNode1': False,
-    u'plotNoNode1Color': "#FF0000",
-    u'plotNoNodeColor': "#0033FF",
+    u'plotNoNode1Color': "FF 00 00",
+    u'plotNoNodeColor': "00 33 FF",
     u'plotOwnNodes': False,
-    u'plotOwnNodesColor': "#333333",
+    u'plotOwnNodesColor': "33 33 33",
     u'plotUnusedNodes': False,
     u'showDebugLevel': 30,
     u'showLegend': False,
@@ -79,12 +101,24 @@ class Plugin(indigo.PluginBase):
         self.debug = True
         self.shutdown = False
         self.indigo_log_handler.setLevel(self.debugLevel)
-        self.logger.info(u"{0:=^60}".format(u" Initializing Plugin "))
 
-        self.logger.info(u'{0}: {1} ({2})'.format(pluginDisplayName, pluginVersion, pluginId))
-        self.logger.info(u'Indigo version: {0}'.format(indigo.server.version))
-        self.logger.info(u'Matplotlib version: {0}'.format(plt.matplotlib.__version__))
-        self.logger.info(u"Matplotlib rc File Path: {0}".format(plt.matplotlib.matplotlib_fname()))
+        # ====================== Initialize DLFramework =======================
+
+        self.Fogbert = Dave.Fogbert(self)
+
+        # Log pluginEnvironment information when plugin is first started
+        self.Fogbert.pluginEnvironment()
+
+        # Convert old debugLevel scale (low, medium, high) to new scale (1, 2, 3).
+        # if not 0 < self.pluginPrefs.get('showDebugLevel', 1) <= 3:
+        #     self.pluginPrefs['showDebugLevel'] = self.Fogbert.convertDebugLevel(self.pluginPrefs['showDebugLevel'])
+
+        # =====================================================================
+
+        # try:
+        #     pydevd.settrace('localhost', port=5678, stdoutToServer=True, stderrToServer=True, suspend=False)
+        # except:
+        #     pass
 
     def __del__(self):
         indigo.PluginBase.__del__(self)
@@ -121,14 +155,14 @@ class Plugin(indigo.PluginBase):
         self.makeTheMatrix()
 
     def makeTheMatrix(self):
-        background_color       = self.pluginPrefs.get('backgroundColor', '#000000')
+        background_color       = r"#{0}".format(self.pluginPrefs.get('backgroundColor', '00 00 00').replace(' ', ''))
         chart_title            = self.pluginPrefs.get('chartTitle', 'Z-Wave Node Matrix')
         chart_title_font       = int(self.pluginPrefs.get('chartTitleFont', 9))
-        font_color             = self.pluginPrefs.get('foregroundColor', '#888888')
+        font_color             = r"#{0}".format(self.pluginPrefs.get('foregroundColor', '88 88 88').replace(' ', ''))
         font_name              = self.pluginPrefs.get('fontMain', 'Arial')
-        foreground_color       = self.pluginPrefs.get('foregroundColor', '#888888')
-        node_color             = self.pluginPrefs.get('nodeColor', '#FFFFFF')
-        node_color_border      = self.pluginPrefs.get('nodeBorderColor', '#66FF00')
+        foreground_color       = r"#{0}".format(self.pluginPrefs.get('foregroundColor', '88 88 88').replace(' ', ''))
+        node_color             = r"#{0}".format(self.pluginPrefs.get('nodeColor', 'FF FF FF').replace(' ', ''))
+        node_color_border      = r"#{0}".format(self.pluginPrefs.get('nodeBorderColor', '66 FF 00').replace(' ', ''))
         node_marker            = self.pluginPrefs.get('nodeMarker', '.')
         node_marker_edge_width = self.pluginPrefs.get('nodeMarkerEdgewidth', '1')
         output_file            = self.pluginPrefs.get('chartPath', '/Library/Application Support/Perceptive Automation/Indigo 7/IndigoWebServer/images/controls/static/neighbors.png')
@@ -139,19 +173,19 @@ class Plugin(indigo.PluginBase):
 
         # If True, each node that is battery powered will be highlighted.
         plot_battery           = self.pluginPrefs.get('plotBattery', False)
-        plot_battery_color     = self.pluginPrefs.get('plotBatteryColor', '#FF0000')
+        plot_battery_color     = r"#{0}".format(self.pluginPrefs.get('plotBatteryColor', 'FF 00 00').replace(' ', ''))
 
         # If True, devices with node 1 missing will be highlighted.
         plot_no_node_1         = self.pluginPrefs.get('plotNoNode1', False)
-        plot_no_node_1_color   = self.pluginPrefs.get('plotNoNode1Color', '#FF0000')
+        plot_no_node_1_color   = r"#{0}".format(self.pluginPrefs.get('plotNoNode1Color', 'FF 00 00').replace(' ', ''))
 
         # If True, neighbors without a corresponding node will be highlighted.
         plot_no_node           = self.pluginPrefs.get('plotNoNode', False)
-        plot_no_node_color     = self.pluginPrefs.get('plotNoNodeColor', '#0033FF')
+        plot_no_node_color     = r"#{0}".format(self.pluginPrefs.get('plotNoNodeColor', '00 33 FF').replace(' ', ''))
 
         # If True, each node will be plotted as its own neighbor.
         plot_self              = self.pluginPrefs.get('plotOwnNodes', False)
-        plot_self_color        = self.pluginPrefs.get('plotOwnNodesColor', '#333333')
+        plot_self_color        = r"#{0}".format(self.pluginPrefs.get('plotOwnNodesColor', '33 33 33').replace(' ', ''))
 
         # If True, unused node addresses will be plotted.
         plot_unused_nodes      = self.pluginPrefs.get('plotUnusedNodes', False)
@@ -165,7 +199,7 @@ class Plugin(indigo.PluginBase):
         # If True, the plugin will highlight devices that have not been updated in a user-specified time (days.)
         lost_devices           = self.pluginPrefs.get('plotLostDevices', False)
         update_delta           = int(self.pluginPrefs.get('plotLostDevicesTimeDelta', 7))
-        lost_devices_color     = self.pluginPrefs.get('plotLostDevicesColor', "#6600CC")
+        lost_devices_color     = r"#{0}".format(self.pluginPrefs.get('plotLostDevicesColor', "66 00 CC").replace(' ', ''))
 
         # =================== kwarg Settings ===================
         kwarg_savefig = {'bbox_extra_artists': None,

@@ -9,7 +9,7 @@
     </Field>
 
     <Field id="space0" type="label"/>
-    <Field id="separator01" type="separator"/>
+    <Field id="separator01a" type="separator"/>
 
     <!-- Chart Output Location -->
     <Field id="chartPath" type="textfield" defaultValue="/Library/Application Support/Perceptive Automation/Indigo 7/IndigoWebServer/images/controls/static/neighbors.png"
@@ -53,6 +53,11 @@
         <Label>Label Font Size:</Label>
     </Field>
 
+    <!-- Chart Resolution -->
+    <Field id="chartResolution" type="textfield" defaultValue="100" tooltip="Enter your preference for the resolution of your chart in DPI (100).">
+        <Label>Image DPI:</Label>
+    </Field>
+
     <!-- Chart Sizing -->
     <Field id="chartManualSize" type="checkbox" defaultValue="False" tooltip="Enable to manually adjust the size of the matrix.">
         <Label>Override Image Size</Label>
@@ -69,17 +74,12 @@
         <Label>Image Width:</Label>
     </Field>
 
-    <!-- Chart Resolution -->
-    <Field id="chartResolution" type="textfield" defaultValue="100" tooltip="Enter your preference for the resolution of your chart in DPI (100).">
-        <Label>Image DPI:</Label>
-    </Field>
-
-    <Field id="foregroundColor" type="textfield" defaultValue="#888888"
+    <Field id="foregroundColor" type="colorpicker" defaultValue="#888888"
            tooltip="Enter the color of the figure's foreground. The foreground controls the color of the text, plot borders and tick marks.">
         <Label>Foreground Color:</Label>
     </Field>
 
-    <Field id="backgroundColor" type="textfield" defaultValue="#000000"
+    <Field id="backgroundColor" type="colorpicker" defaultValue="#000000"
            tooltip="Enter the color of the figure's background. The background controls the color both inside and outside the plot area.">
         <Label>Background Color:</Label>
     </Field>
@@ -105,7 +105,7 @@
         </List>
     </Field>
 
-    <Field id="nodeColor" type="textfield" defaultValue="#FFFFFF" tooltip="Enter the color for each neighbor plot.">
+    <Field id="nodeColor" type="colorpicker" defaultValue="#FFFFFF" tooltip="Enter the color for each neighbor plot.">
         <Label>Node Color:</Label>
     </Field>
 
@@ -120,7 +120,7 @@
         </List>
     </Field>
 
-    <Field id="nodeBorderColor" type="textfield" defaultValue="#66FF00" tooltip="Enter the color that will be applied to each node marker border.">
+    <Field id="nodeBorderColor" type="colorpicker" defaultValue="#66FF00" tooltip="Enter the color that will be applied to each node marker border.">
         <Label>Node Border Color:</Label>
     </Field>
 
@@ -134,7 +134,7 @@
         <Label>Plot these items:</Label>
     </Field>
 
-    <Field id="separator02" type="separator"/>
+    <Field id="separator02a" type="separator"/>
 
     <!-- Plot Unused Nodes -->
     <Field id="plotUnusedNodes" type="checkbox" defaultValue="False" tooltip="Enable to include unused node numbers in the matrix.">
@@ -148,7 +148,7 @@
         <Description/>
     </Field>
 
-    <Field id="plotOwnNodesColor" type="textfield" defaultValue="#333333" visibleBindingId="plotOwnNodes" visibleBindingValue="true"
+    <Field id="plotOwnNodesColor" type="colorpicker" defaultValue="#333333" visibleBindingId="plotOwnNodes" visibleBindingValue="true"
            tooltip="Enter the color to use when plotting node values as their own neighbor">
         <Label>Color:</Label>
     </Field>
@@ -165,7 +165,7 @@
         <Description/>
     </Field>
 
-    <Field id="plotBatteryColor" type="textfield" defaultValue="#6600CC" visibleBindingId="plotBattery" visibleBindingValue="true"
+    <Field id="plotBatteryColor" type="colorpicker" defaultValue="#6600CC" visibleBindingId="plotBattery" visibleBindingValue="true"
            tooltip="Enter the color to indicate battery operated devices.">
         <Label>Color:</Label>
     </Field>
@@ -176,7 +176,7 @@
         <Description/>
     </Field>
 
-    <Field id="plotNoNodeColor" type="textfield" defaultValue="#0033FF" visibleBindingId="plotNoNode" visibleBindingValue="true"
+    <Field id="plotNoNodeColor" type="colorpicker" defaultValue="#0033FF" visibleBindingId="plotNoNode" visibleBindingValue="true"
            tooltip="Enter the color to indicate neighbors missing nodes.">
         <Label>Color:</Label>
     </Field>
@@ -187,7 +187,7 @@
         <Description/>
     </Field>
 
-    <Field id="plotNoNode1Color" type="textfield" defaultValue="#FF0000" visibleBindingId="plotNoNode1" visibleBindingValue="true"
+    <Field id="plotNoNode1Color" type="colorpicker" defaultValue="#FF0000" visibleBindingId="plotNoNode1" visibleBindingValue="true"
            tooltip="Enter the color to highlight nodes that don't have node 1 in their neighbor list.">
         <Label>Color:</Label>
     </Field>
@@ -198,63 +198,20 @@
         <Description/>
     </Field>
 
+    <Field id="plotLostDevicesColor" type="colorpicker" defaultValue="#FF0000" visibleBindingId="plotLostDevices" visibleBindingValue="true"
+           tooltip="Enter the color to highlight nodes that haven't been updated recently.">
+        <Label>Color:</Label>
+    </Field>
+
     <Field id="plotLostDevicesTimeDelta" type="textfield" defaultValue="7" visibleBindingId="plotLostDevices" visibleBindingValue="true"
            tooltip="Enter the number of days to consider a device lost (integer.)">
         <Label>Days:</Label>
     </Field>
 
-    <Field id="plotLostDevicesColor" type="textfield" defaultValue="#FF0000" visibleBindingId="plotLostDevices" visibleBindingValue="true"
-           tooltip="Enter the color to highlight nodes that haven't been updated recently.">
-        <Label>Color:</Label>
-    </Field>
+    <!-- Notifications Template -->
+    <Template file="DLFramework/template_notifications.xml" />
 
-    <Field id="updaterLabel" type="label" alignText="right">
-        <Label>Update Notification:</Label>
-    </Field>
-
-    <Field id="separator04" type="separator"/>
-
-    <Field id="space05" type="label" fontSize="small">
-        <Label>Receive an email alerting you to plugin updates. This sends email through Indigo, so this option must be configured as well.</Label>
-    </Field>
-
-    <Field id="updaterEmailsEnabled" type="checkbox" defaultValue="false" tooltip="Enables (disables) email notifications.">
-        <Label>Enable/Disable</Label>
-        <Description/>
-    </Field>
-
-    <Field id="updaterEmail" type="textfield" defaultValue="" visibleBindingId="updaterEmailsEnabled" visibleBindingValue="true"
-           tooltip="Please enter the email address to receive notifications of updates to the plugin.">
-        <Label>Email address:</Label>
-    </Field>
-
-    <Field id="space06" type="label" alignText="right">
-        <Label>Debugging:</Label>
-    </Field>
-
-    <Field id="separator05" type="separator"/>
-
-    <Field id="showDebugLevel" type="menu" defaultValue="30" tooltip="Controls the amount of debug information written to the log.">
-        <Label>Debug level:</Label>
-        <Description/>
-        <List>
-            <Option value="10">Debugging Messages</Option>
-            <Option value="20">Informational Messages</Option>
-            <Option value="30">Warning Messages</Option>
-            <Option value="40">Error Messages</Option>
-            <Option value="50">Critical Errors Only</Option>
-        </List>
-    </Field>
-
-    <Field id="space07" type="label" fontColor="black" alignWithControl="false" fontSize="small">
-        <Label>Always be careful when posting debug output to the forums or other public places. You should review it to ensure that it doesn't contain sensitive information.
-
-            Debugging Messages = Step by step plugin logging.
-            Informational Messages = Useful information about plugin health.
-            Warning Messages = Warnings about settings that may conflict.
-            Error Messages = Error messages alert you should address.
-            Critical Errors Only = Critical errors that should probably be reported.
-        </Label>
-    </Field>
+    <!-- Debugging Template -->
+    <Template file="DLFramework/template_debugging.xml" />
 
 </PluginConfig>
