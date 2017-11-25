@@ -10,8 +10,6 @@ Only tested to be compatible with matplotlib v1.5.3 and Indigo v7
 
 # =================================== TO DO ===================================
 
-# TODO: Add indigo plugin update checker.
-
 # ================================== IMPORTS ==================================
 
 # Built-in modules
@@ -108,11 +106,6 @@ class Plugin(indigo.PluginBase):
 
         # Log pluginEnvironment information when plugin is first started
         self.Fogbert.pluginEnvironment()
-
-        # Convert old debugLevel scale (low, medium, high) to new scale (1, 2, 3).
-        # if not 0 < self.pluginPrefs.get('showDebugLevel', 1) <= 3:
-        #     self.pluginPrefs['showDebugLevel'] = self.Fogbert.convertDebugLevel(self.pluginPrefs['showDebugLevel'])
-
         # =====================================================================
 
         # try:
