@@ -88,6 +88,7 @@ kDefaultPluginPrefs = {
     u'yAxisLabel': "neighbor",
 }
 
+
 class Plugin(indigo.PluginBase):
 
     def __init__(self, pluginId, pluginDisplayName, pluginVersion, pluginPrefs):
@@ -114,13 +115,12 @@ class Plugin(indigo.PluginBase):
         #     pass
 
     def __del__(self):
+        """ """
         indigo.PluginBase.__del__(self)
 
     def closedPrefsConfigUi(self, valuesDict, userCancelled):
-
+        """ """
         pass
-        # if not userCancelled:
-        #     self.makeTheMatrix()
 
     def getFontList(self, filter="", typeId=0, valuesDict=None, targetId=0):
         """Generates and returns a list of available fonts.  Note that these
@@ -144,10 +144,11 @@ class Plugin(indigo.PluginBase):
         return sorted(names)
 
     def makeTheMatrixAction(self, valuesDict):
-
+        """ """
         self.makeTheMatrix()
 
     def makeTheMatrix(self):
+        """ """
         background_color       = r"#{0}".format(self.pluginPrefs.get('backgroundColor', '00 00 00').replace(' ', ''))
         chart_title            = self.pluginPrefs.get('chartTitle', 'Z-Wave Node Matrix')
         chart_title_font       = int(self.pluginPrefs.get('chartTitleFont', 9))
@@ -454,29 +455,32 @@ class Plugin(indigo.PluginBase):
         displayed in the Indigo Events log. Use the following syntax to
         send exceptions here:
         self.pluginErrorHandler(traceback.format_exc())"""
+
         sub_error = sub_error.splitlines()
         self.logger.threaddebug(u"{0:!^80}".format(" TRACEBACK "))
+
         for line in sub_error:
             self.logger.threaddebug(u"!!! {0}".format(line))
         self.logger.threaddebug(u"!" * 80)
-        # self.logger.warning(u"Error: {0}".format(sub_error[3]))
 
     def checkVersionNow(self):
         """ The checkVersionNow() method will call the Indigo Plugin Update
         Checker based on a user request. """
-        self.debugLog(u"checkVersionNow() method called.")
 
         try:
             self.updater.checkVersionNow()
-        except Exception as error:
-            self.errorLog(u"Error checking plugin update status. Error: {0} (Line {1})".format(error, sys.exc_traceback.tb_lineno))
+        except Exception as sub_error:
+            self.errorLog(u"Error checking plugin update status. Error: {0} (Line {1})".format(sub_error, sys.exc_traceback.tb_lineno))
             return False
 
     def runConcurrentThread(self):
-        # While Indigo hasn't told us to shutdown
+        """ """
+
         while self.shutdown is False:
             self.updater.checkVersionPoll()
             self.sleep(1)
 
     def stopConcurrentThread(self):
+        """ """
+
         self.shutdown = True
