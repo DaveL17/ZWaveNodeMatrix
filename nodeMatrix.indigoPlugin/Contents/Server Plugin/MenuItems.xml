@@ -3,7 +3,7 @@
 
     <MenuItem id="killAllComms">
         <Name>Refresh Matrix</Name>
-        <CallbackMethod>makeTheMatrix</CallbackMethod>
+        <CallbackMethod>make_the_matrix</CallbackMethod>
     </MenuItem>
 
 </MenuItems>

@@ -24,7 +24,7 @@
 #           The url must be formatted like "http://www.domain.com/folder/updateFile.html"
 #           - daysBetweenChecks is optional and defaults to 1.  This controls how often the module
 #           will check for updates automatically.  They can always be checked for manually by running
-#           self.updater.checkVersionNow()
+#           self.updater.check_version_now()
 #
 #
 #   Then put the following in your startup method to see if a check is required at startup:
@@ -85,6 +85,7 @@ import indigo
 import socket
 import time
 from urllib2 import urlopen
+import subprocess
 
 
 class updateChecker(object):
@@ -122,14 +123,18 @@ class updateChecker(object):
 
                 # Try to grab the version file
                 try:
-                        f = urlopen(self.fileUrl)
+                        # f = urlopen(self.fileUrl)
+                        f = subprocess.Popen(["curl", "-k", self.fileUrl], stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=False)
+                        out, err = f.communicate()
+
                 except:
                         self.errorLog(u"versionCheck: Unable to reach the version server.")
                         return
 
                 # Parse the file
                 try:
-                        lines = f.read().split('\n')
+                        # lines = f.read().split('\n')
+                        lines = out.split('\n')
                         if lines[0].startswith('Version:'):
                                 latest_version = lines[0][8:].strip()
                         else:

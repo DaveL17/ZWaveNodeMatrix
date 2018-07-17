@@ -3,6 +3,6 @@
     <SupportURL>http://forums.indigodomo.com/viewtopic.php?f=148&amp;t=16091</SupportURL>
     <Action id="refreshMatrix">
         <Name>Refresh Matrix</Name>
-        <CallbackMethod>makeTheMatrixAction</CallbackMethod>
+        <CallbackMethod>make_the_matrix_action</CallbackMethod>
     </Action>
 </Actions>

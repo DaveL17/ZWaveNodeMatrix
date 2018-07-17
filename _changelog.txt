@@ -1,3 +1,21 @@
+v0.3.01
+- Fixes bug in listing of nodes for combination devices (multiple devices that
+  use the same address).
+- Fixes bug where font setting only affected the chart's title.
+- Refactors code to establish device plotting properties.
+- Increments Indigo Server API requirement to 2.0
+
+v0.2.9
+- Refactors plugin method names to PEP 8.
+
+v0.2.8
+- Fixes bug in naming of PluginConfig.xml (which caused problems on systems set
+  up as case sensitive.
+
+v0.2.7
+- Updates plugin update checker to use curl to overcome outdated security of
+  Apple's Python install.
+
 v0.2.6
 - IPS configuration
 
