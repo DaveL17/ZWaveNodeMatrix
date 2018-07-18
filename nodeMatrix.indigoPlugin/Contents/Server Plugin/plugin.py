@@ -9,7 +9,6 @@ Only tested to be compatible with matplotlib v1.5.3 and Indigo v7
 """
 
 # =================================== TO DO ===================================
-# TODO: Self is messed up in the legend.
 # TODO: New config dialog image for the wiki.
 # TODO: Regression Testing
 
@@ -435,7 +434,7 @@ class Plugin(indigo.PluginBase):
 
             if plot_self:
                 legend_labels.append(u"self")
-                legend_styles.append(tuple(plt.plot([], color=plot_self_color, linestyle='', marker=node_marker, markerfacecolor=plot_self_color)))
+                legend_styles.append(tuple(plt.plot([], color=plot_self_color, linestyle='', marker=node_marker, markerfacecolor=node_color, markeredgecolor=plot_self_color)))
 
             if plot_lost_devices:
                 legend_labels.append(u"{0} ({1})".format('lost', update_delta))
