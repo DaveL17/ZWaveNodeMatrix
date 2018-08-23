@@ -10,7 +10,6 @@ Only tested to be compatible with matplotlib v1.5.3 and Indigo v7
 
 # =================================== TO DO ===================================
 # TODO: New config dialog image for the wiki.
-# TODO: Regression Testing
 
 # ================================== IMPORTS ==================================
 
@@ -49,7 +48,7 @@ __copyright__ = Dave.__copyright__
 __license__   = Dave.__license__
 __build__     = Dave.__build__
 __title__     = 'Z-Wave Node Matrix Plugin'
-__version__   = '0.3.01'
+__version__   = '1.0.01'
 
 # =============================================================================
 
@@ -99,11 +98,10 @@ class Plugin(indigo.PluginBase):
         self.pluginIsInitializing = True
         self.pluginIsShuttingDown = False
 
-        self.updater = indigoPluginUpdateChecker.updateChecker(self, "https://raw.githubusercontent.com/DaveL17/ZWaveNodeMatrix/master/node_matrix_version.html")
+        self.updater    = indigoPluginUpdateChecker.updateChecker(self, "https://raw.githubusercontent.com/DaveL17/ZWaveNodeMatrix/master/node_matrix_version.html")
         self.debugLevel = int(self.pluginPrefs.get('showDebugLevel', '30'))
         self.plugin_file_handler.setFormatter(logging.Formatter('%(asctime)s.%(msecs)03d\t%(levelname)-10s\t%(name)s.%(funcName)-28s %(msg)s', datefmt='%Y-%m-%d %H:%M:%S'))
-        self.debug = True
-        self.shutdown = False
+        self.debug      = True
         self.indigo_log_handler.setLevel(self.debugLevel)
 
         # ========================== Initialize DLFramework ===========================
@@ -121,26 +119,34 @@ class Plugin(indigo.PluginBase):
 
         self.pluginIsInitializing = False
 
+    # =============================================================================
     def __del__(self):
 
         indigo.PluginBase.__del__(self)
 
+    # =============================================================================
+    # ============================== Indigo Methods ===============================
+    # =============================================================================
     def closedPrefsConfigUi(self, valuesDict, userCancelled):
 
-        pass
+        self.debugLevel = int(valuesDict['showDebugLevel'])
+        self.indigo_log_handler.setLevel(self.debugLevel)
 
+    # =============================================================================
     def runConcurrentThread(self):
 
-        while self.shutdown is False:
+        while self.pluginIsShuttingDown is False:
             self.updater.checkVersionPoll()
             self.sleep(1)
 
+    # =============================================================================
     def stopConcurrentThread(self):
 
-        self.shutdown = True
+        self.pluginIsShuttingDown = True
 
-        # ============================== Plugin Methods ===============================
-
+    # =============================================================================
+    # ============================== Plugin Methods ===============================
+    # =============================================================================
     def check_version_now(self):
         """
         Menu call to check for newer version of the plugin
@@ -158,6 +164,7 @@ class Plugin(indigo.PluginBase):
             self.errorLog(u"Error checking plugin update status. Error: {0} (Line {1})".format(sub_error, sys.exc_traceback.tb_lineno))
             return False
 
+    # =============================================================================
     def get_font_list(self, filter="", typeId=0, valuesDict=None, targetId=0):
         """
         Returns a list of available TrueType fonts
@@ -182,6 +189,7 @@ class Plugin(indigo.PluginBase):
 
         return sorted(names)
 
+    # =============================================================================
     def make_the_matrix(self):
         """
         Generate the Z-Wave node matrix image
@@ -191,8 +199,6 @@ class Plugin(indigo.PluginBase):
         -----
 
         """
-        self.logger.info(u"Generating Z-Wave Node Matrix.")
-
         background_color       = r"#{0}".format(self.pluginPrefs.get('backgroundColor', '00 00 00').replace(' ', '').replace('#', ''))
         chart_title            = self.pluginPrefs.get('chartTitle', 'Z-Wave Node Matrix')
         chart_title_font       = int(self.pluginPrefs.get('chartTitleFont', 9))
@@ -241,7 +247,6 @@ class Plugin(indigo.PluginBase):
 
         # ================================== kwargs ===================================
         kwarg_savefig = {'bbox_extra_artists': None,
-                         # 'bbox_inches': 'tight',
                          'dpi': int(self.pluginPrefs.get('chartResolution', 100)),
                          'edgecolor': background_color,
                          'facecolor': background_color,
@@ -276,25 +281,25 @@ class Plugin(indigo.PluginBase):
             if dev_address not in device_dict.keys():
                 device_dict[dev_address] = {}
 
-                device_dict[dev_address]['battery']   = dev.globalProps['com.perceptiveautomation.indigoplugin.zwave'].get('SupportsBatteryLevel', False)
-                device_dict[dev_address]['changed']   = dev.lastChanged
+                device_dict[dev_address]['battery']          = dev.globalProps['com.perceptiveautomation.indigoplugin.zwave'].get('SupportsBatteryLevel', False)
+                device_dict[dev_address]['changed']          = dev.lastChanged
                 device_dict[dev_address]['invalid_neighbor'] = False
-                device_dict[dev_address]['lost']      = False
-                device_dict[dev_address]['neighbors'] = neighbors
-                device_dict[dev_address]['no_node_1'] = False
-                device_dict[dev_address]['name']      = dev.name
+                device_dict[dev_address]['lost']             = False
+                device_dict[dev_address]['neighbors']        = neighbors
+                device_dict[dev_address]['no_node_1']        = False
+                device_dict[dev_address]['name']             = dev.name
 
                 counter += 1
 
-            # Device address already in device_dict but device has neighbors
+            # Device address already in device_dict but device has neighbors (neighbor list not empty)
             elif dev_address in device_dict.keys() and neighbors:
-                device_dict[dev_address]['battery']   = dev.globalProps['com.perceptiveautomation.indigoplugin.zwave'].get('SupportsBatteryLevel', False)
-                device_dict[dev_address]['changed']   = dev.lastChanged
+                device_dict[dev_address]['battery']          = dev.globalProps['com.perceptiveautomation.indigoplugin.zwave'].get('SupportsBatteryLevel', False)
+                device_dict[dev_address]['changed']          = dev.lastChanged
                 device_dict[dev_address]['invalid_neighbor'] = False
-                device_dict[dev_address]['lost']      = False
-                device_dict[dev_address]['neighbors'] = neighbors
-                device_dict[dev_address]['no_node_1'] = False
-                device_dict[dev_address]['name']      = dev.name
+                device_dict[dev_address]['lost']             = False
+                device_dict[dev_address]['neighbors']        = neighbors
+                device_dict[dev_address]['no_node_1']        = False
+                device_dict[dev_address]['name']             = dev.name
 
             # Device address already in device_dict but device has no neighbors
             else:
@@ -352,10 +357,8 @@ class Plugin(indigo.PluginBase):
                 if plot_unused_nodes:
                     plt.plot(node, node, marker=node_marker, markeredgewidth=node_marker_edge_width, markeredgecolor=plot_self_color, markerfacecolor=node_color, zorder=11)
                 else:
-                    plt.plot(device_dict[node]['counter'], dummy_y[node], marker=node_marker, markeredgewidth=node_marker_edge_width, markeredgecolor=plot_self_color, markerfacecolor=node_color,
-                             zorder=11)
-                    # plt.plot(device_dict[node]['counter'], node, marker=node_marker, markeredgewidth=node_marker_edge_width, markeredgecolor=plot_self_color, markerfacecolor=node_color,
-                    #          zorder=11)
+                    plt.plot(device_dict[node]['counter'], dummy_y[node], marker=node_marker, markeredgewidth=node_marker_edge_width, markeredgecolor=plot_self_color,
+                             markerfacecolor=node_color, zorder=11)
 
             # ============================ Plot Neighbors =============================
             for neighbor in device_dict[node]['neighbors']:
@@ -364,8 +367,6 @@ class Plugin(indigo.PluginBase):
                 else:
                     plt.plot(device_dict[node]['counter'], dummy_y[neighbor], marker=node_marker, markeredgewidth=node_marker_edge_width, markeredgecolor=node_color_border,
                              markerfacecolor=node_color, zorder=9)
-                    # plt.plot(device_dict[node]['counter'], neighbor, marker=node_marker, markeredgewidth=node_marker_edge_width, markeredgecolor=node_color_border,
-                    #          markerfacecolor=node_color, zorder=9)
 
                 # =========================== Plot Battery Devices ============================
                 if plot_battery:
@@ -374,8 +375,6 @@ class Plugin(indigo.PluginBase):
                     elif device_dict[node]['battery']:
                         plt.plot(device_dict[node]['counter'], dummy_y[neighbor], marker=node_marker, markeredgewidth=node_marker_edge_width, markeredgecolor=plot_battery_color,
                                  markerfacecolor=node_color, zorder=10)
-                        # plt.plot(device_dict[node]['counter'], neighbor, marker=node_marker, markeredgewidth=node_marker_edge_width, markeredgecolor=plot_battery_color,
-                        #          markerfacecolor=node_color, zorder=10)
 
                 # ============================= Plot Lost Devices =============================
                 if plot_lost_devices and device_dict[node]['lost']:
@@ -384,8 +383,6 @@ class Plugin(indigo.PluginBase):
                     else:
                         plt.plot(device_dict[node]['counter'], dummy_y[neighbor], marker=node_marker, markeredgewidth=node_marker_edge_width, markeredgecolor=lost_devices_color,
                                  markerfacecolor=node_color, zorder=11)
-                        # plt.plot(device_dict[node]['counter'], neighbor, marker=node_marker, markeredgewidth=node_marker_edge_width, markeredgecolor=lost_devices_color,
-                        #          markerfacecolor=node_color, zorder=11)
 
         # ============================== Chart Settings ===============================
         plt.title(chart_title, **kwarg_title)
@@ -408,8 +405,6 @@ class Plugin(indigo.PluginBase):
         plt.ylabel(y_axis_label, fontname=font_name, fontsize=chart_title_font, color=foreground_color)
         plt.tick_params(axis='y', left=True, right=False)
 
-        # plt.yticks(np.arange(1, max(dev_keys) + 1, 1), fontname=font_name, fontsize=tick_font_size, color=foreground_color, ha='right')
-        # plt.ylim(0, max(dev_keys) + 1)
         if plot_unused_nodes:
             plt.yticks(np.arange(1, max(dev_keys) + 1, 1), fontsize=tick_font_size, color=foreground_color)
             plt.ylim(0, max(dev_keys) + 1)
@@ -471,11 +466,6 @@ class Plugin(indigo.PluginBase):
 
         # ================== Color labels for neighbors with no node ==================
         # Affects labels on the Y axis.
-        # if plot_no_node:
-        #     y_tick_labels = [i for i in plt.gca().get_yticklabels()]
-        #     for node in neighbor_list:
-        #         if node not in dev_keys and node != 1:
-        #             y_tick_labels[node - 1].set_color(plot_no_node_color)
         if plot_no_node:
             y_tick_labels = [i for i in plt.gca().get_yticklabels()]
 
@@ -498,12 +488,13 @@ class Plugin(indigo.PluginBase):
             self.logger.warning(u"Chart output error: {0}:".format(sub_error))
 
         # Wind things up.
-        plt.close()
+        plt.close('all')
         self.logger.info(u"Z-Wave Node Matrix generated.")
 
+    # =============================================================================
     def make_the_matrix_action(self, valuesDict):
         """
-        Respond to menu call to generate a new imaage
+        Respond to menu call to generate a new image
 
         When the user calls for an updated image to be generated via the Refresh Matrix
         menu item, call self.make_the_matrix() method.
@@ -515,6 +506,7 @@ class Plugin(indigo.PluginBase):
         """
         self.make_the_matrix()
 
+    # =============================================================================
     def plugin_error_handler(self, sub_error):
         """
         General handling of trapped plugin exceptions
@@ -536,4 +528,3 @@ class Plugin(indigo.PluginBase):
         for line in sub_error:
             self.logger.threaddebug(u"!!! {0}".format(line))
         self.logger.threaddebug(u"!" * 80)
-

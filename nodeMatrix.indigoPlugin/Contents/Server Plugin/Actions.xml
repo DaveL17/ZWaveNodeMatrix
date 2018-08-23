@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <Actions>
-    <SupportURL>http://forums.indigodomo.com/viewtopic.php?f=148&amp;t=16091</SupportURL>
+    <SupportURL>https://github.com/DaveL17/ZWaveNodeMatrix/wiki</SupportURL>
     <Action id="refreshMatrix">
         <Name>Refresh Matrix</Name>
         <CallbackMethod>make_the_matrix_action</CallbackMethod>

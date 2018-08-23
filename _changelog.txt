@@ -1,3 +1,9 @@
+v1.0.01
+- Takes plugin out of beta.
+- Fixes bug where change in debug level required a plugin restart to take
+  effect.
+- Code refinements.
+
 v0.3.01
 - Fixes bug in listing of nodes for combination devices (multiple devices that
   use the same address).
