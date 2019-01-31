@@ -1,3 +1,6 @@
+v1.0.02
+- Changes Python lists to tuples where possible to improve performance.
+
 v1.0.01
 - Takes plugin out of beta.
 - Fixes bug where change in debug level required a plugin restart to take

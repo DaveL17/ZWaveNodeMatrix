@@ -48,7 +48,7 @@ __copyright__ = Dave.__copyright__
 __license__   = Dave.__license__
 __build__     = Dave.__build__
 __title__     = 'Z-Wave Node Matrix Plugin'
-__version__   = '1.0.01'
+__version__   = '1.0.02'
 
 # =============================================================================
 
@@ -386,7 +386,7 @@ class Plugin(indigo.PluginBase):
 
         # ============================== Chart Settings ===============================
         plt.title(chart_title, **kwarg_title)
-        for spine in ['top', 'bottom', 'left', 'right']:
+        for spine in ('top', 'bottom', 'left', 'right'):
             plt.gca().spines[spine].set_color(foreground_color)
         plt.tick_params(axis='both', which='both', labelsize=tick_font_size, color=foreground_color)
 
