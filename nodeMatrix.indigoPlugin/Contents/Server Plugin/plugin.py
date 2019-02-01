@@ -47,7 +47,7 @@ __copyright__ = Dave.__copyright__
 __license__   = Dave.__license__
 __build__     = Dave.__build__
 __title__     = 'Z-Wave Node Matrix Plugin'
-__version__   = '1.0.04'
+__version__   = '1.0.05'
 
 # =============================================================================
 install_path = indigo.server.getInstallFolderPath()
@@ -126,8 +126,19 @@ class Plugin(indigo.PluginBase):
     # =============================================================================
     def closedPrefsConfigUi(self, valuesDict, userCancelled):
 
-        self.debugLevel = int(valuesDict['showDebugLevel'])
-        self.indigo_log_handler.setLevel(self.debugLevel)
+        if not userCancelled:
+
+            # Ensure that self.pluginPrefs includes any recent changes.
+            for k in valuesDict:
+                self.pluginPrefs[k] = valuesDict[k]
+
+            self.debugLevel = int(valuesDict['showDebugLevel'])
+            self.indigo_log_handler.setLevel(self.debugLevel)
+
+            self.logger.debug(u"User prefs saved.")
+
+        else:
+            self.logger.debug(u"User prefs cancelled.")
 
     # =============================================================================
     def runConcurrentThread(self):
