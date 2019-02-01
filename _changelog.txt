@@ -1,3 +1,6 @@
+v1.0.03
+- Removes plugin update checker.
+
 v1.0.02
 - Changes Python lists to tuples where possible to improve performance.
 

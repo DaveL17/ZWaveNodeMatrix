@@ -27,7 +27,6 @@ except ImportError as error:
     sys.exit(u"The matplotlib and numpy modules are required to use this script.")
 
 # Third-party modules
-from DLFramework import indigoPluginUpdateChecker
 try:
     import indigo
 except ImportError:
@@ -82,8 +81,6 @@ kDefaultPluginPrefs = {
     u'showDebugLevel': 30,
     u'showLegend': False,
     u'tickLabelFont': 6,
-    u'updaterEmail': "",
-    u'updaterEmailsEnabled': False,
     u'xAxisLabel': "node",
     u'xAxisRotate': 0,
     u'yAxisLabel': "neighbor",
@@ -98,7 +95,6 @@ class Plugin(indigo.PluginBase):
         self.pluginIsInitializing = True
         self.pluginIsShuttingDown = False
 
-        self.updater    = indigoPluginUpdateChecker.updateChecker(self, "https://raw.githubusercontent.com/DaveL17/ZWaveNodeMatrix/master/node_matrix_version.html")
         self.debugLevel = int(self.pluginPrefs.get('showDebugLevel', '30'))
         self.plugin_file_handler.setFormatter(logging.Formatter('%(asctime)s.%(msecs)03d\t%(levelname)-10s\t%(name)s.%(funcName)-28s %(msg)s', datefmt='%Y-%m-%d %H:%M:%S'))
         self.debug      = True
@@ -136,7 +132,6 @@ class Plugin(indigo.PluginBase):
     def runConcurrentThread(self):
 
         while self.pluginIsShuttingDown is False:
-            self.updater.checkVersionPoll()
             self.sleep(1)
 
     # =============================================================================
@@ -146,24 +141,6 @@ class Plugin(indigo.PluginBase):
 
     # =============================================================================
     # ============================== Plugin Methods ===============================
-    # =============================================================================
-    def check_version_now(self):
-        """
-        Menu call to check for newer version of the plugin
-
-        The check_version_now() method will call the Indigo Plugin Update
-        Checker based on a user request.
-
-        -----
-
-        """
-
-        try:
-            self.updater.checkVersionNow()
-        except Exception as sub_error:
-            self.errorLog(u"Error checking plugin update status. Error: {0} (Line {1})".format(sub_error, sys.exc_traceback.tb_lineno))
-            return False
-
     # =============================================================================
     def get_font_list(self, filter="", typeId=0, valuesDict=None, targetId=0):
         """
