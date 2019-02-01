@@ -1,3 +1,7 @@
+v1.0.04
+- Updates default image save location to current install path.
+- Updates kDefaultPluginPrefs
+
 v1.0.03
 - Removes plugin update checker.
 

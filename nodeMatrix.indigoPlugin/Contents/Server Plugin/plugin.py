@@ -47,15 +47,16 @@ __copyright__ = Dave.__copyright__
 __license__   = Dave.__license__
 __build__     = Dave.__build__
 __title__     = 'Z-Wave Node Matrix Plugin'
-__version__   = '1.0.02'
+__version__   = '1.0.04'
 
 # =============================================================================
+install_path = indigo.server.getInstallFolderPath()
 
 kDefaultPluginPrefs = {
     u'backgroundColor': "00 00 00",
     u'chartHeight': 7,
     u'chartManualSize': False,
-    u'chartPath': "/Library/Application Support/Perceptive Automation/Indigo 7/IndigoWebServer/images/controls/static/neighbors.png",
+    u'chartPath': u"{0}/IndigoWebServer/images/controls/static/neighbors.png".format(install_path),
     u'chartResolution': 100,
     u'chartTitle': "Z-Wave Node Matrix",
     u'chartTitleFont': 9,

@@ -9,10 +9,11 @@
     </Field>
 
     <Field id="space0" type="label"/>
+
     <Field id="separator01a" type="separator"/>
 
     <!-- Chart Output Location -->
-    <Field id="chartPath" type="textfield" defaultValue="/Library/Application Support/Perceptive Automation/Indigo 7/IndigoWebServer/images/controls/static/neighbors.png"
+    <Field id="chartPath" type="textfield"
            tooltip="Enter the complete path and filename where your matrix image will be saved.">
         <Label>Image Location:</Label>
     </Field>
@@ -59,7 +60,7 @@
     </Field>
 
     <!-- Chart Sizing -->
-    <Field id="chartManualSize" type="checkbox" defaultValue="False" tooltip="Enable to manually adjust the size of the matrix.">
+    <Field id="chartManualSize" type="checkbox" defaultValue="false" tooltip="Enable to manually adjust the size of the matrix.">
         <Label>Override Image Size</Label>
         <Description/>
     </Field>
@@ -74,12 +75,12 @@
         <Label>Image Width:</Label>
     </Field>
 
-    <Field id="foregroundColor" type="colorpicker" defaultValue="#888888"
+    <Field id="foregroundColor" type="colorpicker" defaultValue="88 88 88"
            tooltip="Enter the color of the figure's foreground. The foreground controls the color of the text, plot borders and tick marks.">
         <Label>Foreground Color:</Label>
     </Field>
 
-    <Field id="backgroundColor" type="colorpicker" defaultValue="#000000"
+    <Field id="backgroundColor" type="colorpicker" defaultValue="00 00 00"
            tooltip="Enter the color of the figure's background. The background controls the color both inside and outside the plot area.">
         <Label>Background Color:</Label>
     </Field>
@@ -105,7 +106,7 @@
         </List>
     </Field>
 
-    <Field id="nodeColor" type="colorpicker" defaultValue="#FFFFFF" tooltip="Enter the color for each neighbor plot.">
+    <Field id="nodeColor" type="colorpicker" defaultValue="FF FF FF" tooltip="Enter the color for each neighbor plot.">
         <Label>Node Color:</Label>
     </Field>
 
@@ -120,12 +121,12 @@
         </List>
     </Field>
 
-    <Field id="nodeBorderColor" type="colorpicker" defaultValue="#66FF00" tooltip="Enter the color that will be applied to each node marker border.">
+    <Field id="nodeBorderColor" type="colorpicker" defaultValue="66 FF 00" tooltip="Enter the color that will be applied to each node marker border.">
         <Label>Node Border Color:</Label>
     </Field>
 
     <!-- Show Legend -->
-    <Field id="showLegend" type="checkbox" defaultValue="False" tooltip="Enable to include a legend on your matrix.">
+    <Field id="showLegend" type="checkbox" defaultValue="false" tooltip="Enable to include a legend on your matrix.">
         <Label>Show Key</Label>
         <Description/>
     </Field>
@@ -137,18 +138,18 @@
     <Field id="separator02a" type="separator"/>
 
     <!-- Plot Unused Nodes -->
-    <Field id="plotUnusedNodes" type="checkbox" defaultValue="False" tooltip="Enable to include unused node numbers in the matrix.">
+    <Field id="plotUnusedNodes" type="checkbox" defaultValue="false" tooltip="Enable to include unused node numbers in the matrix.">
         <Label>Unused Nodes</Label>
         <Description>(shown on X axis and in grid.)</Description>
     </Field>
 
     <!-- Plot Self -->
-    <Field id="plotOwnNodes" type="checkbox" defaultValue="False" tooltip="Enable to plot each node's own address as a neighbor.">
+    <Field id="plotOwnNodes" type="checkbox" defaultValue="false" tooltip="Enable to plot each node's own address as a neighbor.">
         <Label>Self as Neighbor</Label>
         <Description>(shown in grid.)</Description>
     </Field>
 
-    <Field id="plotOwnNodesColor" type="colorpicker" defaultValue="#333333" visibleBindingId="plotOwnNodes" visibleBindingValue="true"
+    <Field id="plotOwnNodesColor" type="colorpicker" defaultValue="33 33 33" visibleBindingId="plotOwnNodes" visibleBindingValue="true"
            tooltip="Enter the color to use when plotting node values as their own neighbor">
         <Label>Border Color:</Label>
     </Field>
@@ -160,23 +161,23 @@
     <Field id="separator03" type="separator"/>
 
     <!-- Plot Battery -->
-    <Field id="plotBattery" type="checkbox" defaultValue="False" tooltip="Enable to highlight nodes that are battery-powered.">
+    <Field id="plotBattery" type="checkbox" defaultValue="false" tooltip="Enable to highlight nodes that are battery-powered.">
         <Label>Battery Devices</Label>
         <Description>(shown in grid.)</Description>
     </Field>
 
-    <Field id="plotBatteryColor" type="colorpicker" defaultValue="#6600CC" visibleBindingId="plotBattery" visibleBindingValue="true"
+    <Field id="plotBatteryColor" type="colorpicker" defaultValue="66 00 CC" visibleBindingId="plotBattery" visibleBindingValue="true"
            tooltip="Enter the color to indicate battery operated devices.">
         <Label>Border Color:</Label>
     </Field>
 
     <!-- Plot Lost Devices -->
-    <Field id="plotLostDevices" type="checkbox" defaultValue="False" tooltip="Enable to highlight nodes haven't been updated in a specified number of days.">
+    <Field id="plotLostDevices" type="checkbox" defaultValue="false" tooltip="Enable to highlight nodes haven't been updated in a specified number of days.">
         <Label>Lost Devices</Label>
         <Description>(shown in grid.)</Description>
     </Field>
 
-    <Field id="plotLostDevicesColor" type="colorpicker" defaultValue="#FF0000" visibleBindingId="plotLostDevices" visibleBindingValue="true"
+    <Field id="plotLostDevicesColor" type="colorpicker" defaultValue="FF 00 00" visibleBindingId="plotLostDevices" visibleBindingValue="true"
            tooltip="Enter the color to highlight nodes that haven't been updated recently.">
         <Label>Border Color:</Label>
     </Field>
@@ -187,23 +188,23 @@
     </Field>
 
     <!-- Plot No Node 1 -->
-    <Field id="plotNoNode1" type="checkbox" defaultValue="False" tooltip="Enable to highlight nodes that don't have node 1 in their neighbor list.">
+    <Field id="plotNoNode1" type="checkbox" defaultValue="false" tooltip="Enable to highlight nodes that don't have node 1 in their neighbor list.">
         <Label>Missing Neighbor 1</Label>
         <Description>(colors X axis labels.)</Description>
     </Field>
 
-    <Field id="plotNoNode1Color" type="colorpicker" defaultValue="#FF0000" visibleBindingId="plotNoNode1" visibleBindingValue="true"
+    <Field id="plotNoNode1Color" type="colorpicker" defaultValue="FF 00 00" visibleBindingId="plotNoNode1" visibleBindingValue="true"
            tooltip="Enter the color to highlight nodes that don't have node 1 in their neighbor list.">
         <Label>Label Color:</Label>
     </Field>
 
     <!-- Neighbors Missing Nodes -->
-    <Field id="plotNoNode" type="checkbox" defaultValue="False" tooltip="Enable to highlight neighbors that don't have a corresponding node.">
+    <Field id="plotNoNode" type="checkbox" defaultValue="false" tooltip="Enable to highlight neighbors that don't have a corresponding node.">
         <Label>Invalid Neighbors</Label>
         <Description>(colors Y axis labels.)</Description>
     </Field>
 
-    <Field id="plotNoNodeColor" type="colorpicker" defaultValue="#0033FF" visibleBindingId="plotNoNode" visibleBindingValue="true"
+    <Field id="plotNoNodeColor" type="colorpicker" defaultValue="00 33 FF" visibleBindingId="plotNoNode" visibleBindingValue="true"
            tooltip="Enter the color to indicate neighbors missing nodes.">
         <Label>Label Color:</Label>
     </Field>
