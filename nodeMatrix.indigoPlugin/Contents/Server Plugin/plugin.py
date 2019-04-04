@@ -10,6 +10,7 @@ Only tested to be compatible with matplotlib v1.5.3 and Indigo v7
 
 # =================================== TO DO ===================================
 # TODO: New config dialog image for the wiki.
+# TODO: Error when no Z-Wave devices present.
 
 # ================================== IMPORTS ==================================
 
@@ -47,7 +48,7 @@ __copyright__ = Dave.__copyright__
 __license__   = Dave.__license__
 __build__     = Dave.__build__
 __title__     = 'Z-Wave Node Matrix Plugin'
-__version__   = '1.0.05'
+__version__   = '1.0.06'
 
 # =============================================================================
 install_path = indigo.server.getInstallFolderPath()
@@ -145,6 +146,11 @@ class Plugin(indigo.PluginBase):
 
         while self.pluginIsShuttingDown is False:
             self.sleep(1)
+
+    def startup(self):
+
+        # =========================== Audit Indigo Version ============================
+        self.Fogbert.audit_server_version(min_ver=7)
 
     # =============================================================================
     def stopConcurrentThread(self):

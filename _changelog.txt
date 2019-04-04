@@ -1,3 +1,7 @@
+v1.0.06
+- Ensures that the plugin is compatible with the Indigo server version.
+- Standardizes Support URL behavior across all plugin functions.
+
 v1.0.05
 - Synchronize self.pluginPrefs in closedPrefsConfigUi().
 

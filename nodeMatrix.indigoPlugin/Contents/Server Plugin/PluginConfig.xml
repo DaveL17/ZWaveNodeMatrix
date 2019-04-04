@@ -3,6 +3,7 @@
 <!-- Be sure to add any new prefs to kDefaultPluginPrefs in plugin.py -->
 
 <PluginConfig>
+    <SupportURL>https://github.com/DaveL17/ZWaveNodeMatrix/wiki/configuration</SupportURL>
 
     <Field id="infoLabel0" type="label">
         <Label>Z-Wave Node Matrix Plugin - Developed by DaveL17</Label>
@@ -113,11 +114,12 @@
     <Field id="nodeMarkerEdgewidth" type="menu" defaultValue="1.0" tooltip="Select the width of the border that will be applied to each marker.">
         <Label>Node Border Width:</Label>
         <List>
-            <Option value="0">None</Option>
             <Option value="0.5">Thin*</Option>
             <Option value="1.0">Thick</Option>
             <Option value="1.5">Very Thick</Option>
             <Option value="2.0">Super Thick</Option>
+            <Option value="-1">%%separator%%</Option>
+            <Option value="0">None</Option>
         </List>
     </Field>
 
