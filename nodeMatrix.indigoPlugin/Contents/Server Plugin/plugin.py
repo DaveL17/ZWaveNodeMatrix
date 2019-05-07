@@ -147,6 +147,13 @@ class Plugin(indigo.PluginBase):
         while self.pluginIsShuttingDown is False:
             self.sleep(1)
 
+    # =============================================================================
+    def sendDevicePing(self, dev_id=0, suppress_logging=False):
+
+        indigo.server.log(u"ZWaveNodeMatrix Plugin devices do not support the ping function.")
+        return {'result': 'Failure'}
+
+    # =============================================================================
     def startup(self):
 
         # =========================== Audit Indigo Version ============================

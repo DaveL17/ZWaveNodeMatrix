@@ -1,4 +1,5 @@
-![ZWNM Logo](https://github.com/DaveL17/ZWaveNodeMatrix/wiki/img/img_zwnmLogo.png)
+# ![Logo](https://github.com/DaveL17/ZWaveNodeMatrix/wiki/img/img_zwnmLogo.png)
+# ![shield](https://img.shields.io/github/release/DaveL17/ZWaveNodeMatrix.svg)
 
 The ZWave Node Matrix plugin creates a visual representation of an Indigo
 ZWave network by plotting each devices's neighbor list onto a scatter plot.
