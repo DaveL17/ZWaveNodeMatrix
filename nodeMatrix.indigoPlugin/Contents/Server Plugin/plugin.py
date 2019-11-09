@@ -48,7 +48,7 @@ __copyright__ = Dave.__copyright__
 __license__   = Dave.__license__
 __build__     = Dave.__build__
 __title__     = 'Z-Wave Node Matrix Plugin'
-__version__   = '1.0.07'
+__version__   = '1.0.08'
 
 # =============================================================================
 install_path = indigo.server.getInstallFolderPath()

@@ -94,7 +94,7 @@
             <Option value="d">Diamond (Thin)</Option>
             <Option value="h">Hexagon 1</Option>
             <Option value="H">Hexagon 2</Option>
-            <Option value="-">Horizontal Line</Option>
+            <Option value="_">Horizontal Line</Option>
             <Option value="8">Octagon</Option>
             <Option value="p">Pentagon</Option>
             <Option value=",">Pixel</Option>

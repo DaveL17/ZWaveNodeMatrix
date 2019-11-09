@@ -1,3 +1,6 @@
+v1.0.08
+- Fixes bug for horizontal line marker style.
+
 v1.0.07
 - Increments version number.
 
