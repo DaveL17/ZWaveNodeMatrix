@@ -1,3 +1,6 @@
+v1.0.09
+- Syncronizes version numbers.
+
 v1.0.08
 - Fixes bug for horizontal line marker style.
 
