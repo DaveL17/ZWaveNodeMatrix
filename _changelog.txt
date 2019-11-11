@@ -1,4 +1,7 @@
-v1.0.09
+v1.0.11
+- Fixes bug where plugin would error out when no Z-Wave devices present.
+
+v1.0.10
 - Adds asterisk to plugin configuration dialog dropdown menus to indicate
   default setting.
 
