@@ -99,7 +99,7 @@
             <Option value="p">Pentagon</Option>
             <Option value=",">Pixel</Option>
             <Option value="+">Plus</Option>
-            <Option value=".">Point</Option>
+            <Option value=".">Point*</Option>
             <Option value="*">Star</Option>
             <Option value="s">Square</Option>
             <Option value="|">Vertical Line</Option>
@@ -115,7 +115,7 @@
         <Label>Node Border Width:</Label>
         <List>
             <Option value="0.5">Thin*</Option>
-            <Option value="1.0">Thick</Option>
+            <Option value="1.0">Thick*</Option>
             <Option value="1.5">Very Thick</Option>
             <Option value="2.0">Super Thick</Option>
             <Option value="-1">%%separator%%</Option>

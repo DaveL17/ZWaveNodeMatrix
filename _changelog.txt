@@ -1,4 +1,8 @@
 v1.0.09
+- Adds asterisk to plugin configuration dialog dropdown menus to indicate
+  default setting.
+
+v1.0.09
 - Syncronizes version numbers.
 
 v1.0.08
