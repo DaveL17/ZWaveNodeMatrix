@@ -1,3 +1,6 @@
+v1.0.12
+- Removes all references to legacy version checking.
+
 v1.0.11
 - Fixes bug where plugin would error out when no Z-Wave devices present.
 
