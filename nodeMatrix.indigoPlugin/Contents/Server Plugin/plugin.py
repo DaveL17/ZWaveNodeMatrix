@@ -124,15 +124,15 @@ class Plugin(indigo.PluginBase):
     # =============================================================================
     # ============================== Indigo Methods ===============================
     # =============================================================================
-    def closedPrefsConfigUi(self, valuesDict, userCancelled):
+    def closedPrefsConfigUi(self, values_dict, user_cancelled):
 
-        if not userCancelled:
+        if not user_cancelled:
 
             # Ensure that self.pluginPrefs includes any recent changes.
-            for k in valuesDict:
-                self.pluginPrefs[k] = valuesDict[k]
+            for k in values_dict:
+                self.pluginPrefs[k] = values_dict[k]
 
-            self.debugLevel = int(valuesDict['showDebugLevel'])
+            self.debugLevel = int(values_dict['showDebugLevel'])
             self.indigo_log_handler.setLevel(self.debugLevel)
 
             self.logger.debug(u"User prefs saved.")
@@ -166,7 +166,7 @@ class Plugin(indigo.PluginBase):
     # =============================================================================
     # ============================== Plugin Methods ===============================
     # =============================================================================
-    def get_font_list(self, filter="", typeId=0, valuesDict=None, targetId=0):
+    def get_font_list(self, filter="", type_id=0, values_dict=None, target_id=0):
         """
         Returns a list of available TrueType fonts
 
@@ -176,9 +176,9 @@ class Plugin(indigo.PluginBase):
 
         -----
         :param filter:
-        :param typeId:
-        :param valuesDict:
-        :param targetId:
+        :param type_id:
+        :param values_dict:
+        :param target_id:
 
         :return list names:
         """
@@ -498,7 +498,7 @@ class Plugin(indigo.PluginBase):
         self.logger.info(u"Z-Wave Node Matrix generated.")
 
     # =============================================================================
-    def make_the_matrix_action(self, valuesDict):
+    def make_the_matrix_action(self, values_dict):
         """
         Respond to menu call to generate a new image
 
@@ -507,7 +507,7 @@ class Plugin(indigo.PluginBase):
 
         -----
 
-        :param valuesDict:
+        :param values_dict:
 
         """
         self.make_the_matrix()
