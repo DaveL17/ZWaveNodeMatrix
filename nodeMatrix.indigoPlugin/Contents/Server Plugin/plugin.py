@@ -141,10 +141,10 @@ class Plugin(indigo.PluginBase):
             self.logger.debug(u"User prefs cancelled.")
 
     # =============================================================================
-    def runConcurrentThread(self):
-
-        while self.pluginIsShuttingDown is False:
-            self.sleep(1)
+    # def runConcurrentThread(self):
+    #
+    #     while self.pluginIsShuttingDown is False:
+    #         self.sleep(1)
 
     # =============================================================================
     def sendDevicePing(self, dev_id=0, suppress_logging=False):
