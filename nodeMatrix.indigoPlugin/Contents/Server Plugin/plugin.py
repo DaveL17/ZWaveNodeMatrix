@@ -47,7 +47,7 @@ __copyright__ = Dave.__copyright__
 __license__   = Dave.__license__
 __build__     = Dave.__build__
 __title__     = 'Z-Wave Node Matrix Plugin'
-__version__   = '1.0.11'
+__version__   = '1.0.14'
 
 # =============================================================================
 install_path = indigo.server.getInstallFolderPath()
@@ -155,8 +155,9 @@ class Plugin(indigo.PluginBase):
     # =============================================================================
     def startup(self):
 
-        # =========================== Audit Indigo Version ============================
+        # =========================== Audit Server Version ============================
         self.Fogbert.audit_server_version(min_ver=7)
+
 
     # =============================================================================
     def stopConcurrentThread(self):
@@ -489,9 +490,9 @@ class Plugin(indigo.PluginBase):
         # ==================== Output the Z-Wave Node Matrix Image ====================
         try:
             plt.savefig(output_file, **kwarg_savefig)
-        except Exception as sub_error:
-            self.plugin_error_handler(traceback.format_exc())
-            self.logger.warning(u"Chart output error: {0}:".format(sub_error))
+        except Exception:
+            self.Fogbert.pluginErrorHandler(traceback.format_exc())
+            self.logger.warning(u"Chart output error")
 
         # Wind things up.
         plt.close('all')
@@ -511,26 +512,3 @@ class Plugin(indigo.PluginBase):
 
         """
         self.make_the_matrix()
-
-    # =============================================================================
-    def plugin_error_handler(self, sub_error):
-        """
-        General handling of trapped plugin exceptions
-
-        Centralized handling of traceback messages formatted for pretty
-        display in the plugin log file. If sent here, they will not be
-        displayed in the Indigo Events log. Use the following syntax to
-        send exceptions here:
-        self.plugin_error_handler(traceback.format_exc())
-
-        -----
-
-        :param sub_error:
-        """
-
-        sub_error = sub_error.splitlines()
-        self.logger.threaddebug(u"{0:!^80}".format(" TRACEBACK "))
-
-        for line in sub_error:
-            self.logger.threaddebug(u"!!! {0}".format(line))
-        self.logger.threaddebug(u"!" * 80)

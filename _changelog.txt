@@ -1,3 +1,6 @@
+v1.0.14
+- Better integration of DLFramework.
+
 v1.0.13
 - Code refinements.
 
