@@ -1,4 +1,8 @@
 v1.0.14
+- Fixes broken link to readme logo.
+- Fixes broken symlinks.
+
+v1.0.14
 - Better integration of DLFramework.
 
 v1.0.13

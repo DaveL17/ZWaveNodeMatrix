@@ -97,7 +97,8 @@ class Plugin(indigo.PluginBase):
         self.pluginIsShuttingDown = False
 
         self.debugLevel = int(self.pluginPrefs.get('showDebugLevel', '30'))
-        self.plugin_file_handler.setFormatter(logging.Formatter('%(asctime)s.%(msecs)03d\t%(levelname)-10s\t%(name)s.%(funcName)-28s %(msg)s', datefmt='%Y-%m-%d %H:%M:%S'))
+        log_format = '%(asctime)s.%(msecs)03d\t%(levelname)-10s\t%(name)s.%(funcName)-28s %(msg)s'
+        self.plugin_file_handler.setFormatter(logging.Formatter(log_format, datefmt='%Y-%m-%d %H:%M:%S'))
         self.debug      = True
         self.indigo_log_handler.setLevel(self.debugLevel)
 
@@ -157,7 +158,6 @@ class Plugin(indigo.PluginBase):
 
         # =========================== Audit Server Version ============================
         self.Fogbert.audit_server_version(min_ver=7)
-
 
     # =============================================================================
     def stopConcurrentThread(self):
