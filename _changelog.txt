@@ -1,3 +1,6 @@
+v2022.0.1
+- Updates plugin for Indigo 2022.1 and Python 3.
+
 v1.0.15
 - Fixes broken link to readme logo.
 - Fixes broken symlinks.
@@ -19,7 +22,7 @@ v1.0.10
   default setting.
 
 v1.0.09
-- Syncronizes version numbers.
+- Synchronizes version numbers.
 
 v1.0.08
 - Fixes bug for horizontal line marker style.
@@ -35,7 +38,7 @@ v1.0.05
 - Synchronize self.pluginPrefs in closedPrefsConfigUi().
 
 v1.0.04
-- Updates default image save location to current install path.
+- Updates default image save location to the current install path.
 - Updates kDefaultPluginPrefs
 
 v1.0.03
@@ -62,7 +65,7 @@ v0.2.9
 
 v0.2.8
 - Fixes bug in naming of PluginConfig.xml (which caused problems on systems set
-  up as case sensitive.
+  up as case-sensitive).
 
 v0.2.7
 - Updates plugin update checker to use curl to overcome outdated security of
