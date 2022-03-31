@@ -19,6 +19,8 @@ import logging
 import sys
 import traceback
 try:
+    import matplotlib
+    matplotlib.use("AGG")
     import matplotlib.font_manager as fnt
     import matplotlib.pyplot as plt
     import numpy as np
@@ -47,7 +49,7 @@ __copyright__ = Dave.__copyright__
 __license__   = Dave.__license__
 __build__     = Dave.__build__
 __title__     = 'Z-Wave Node Matrix Plugin'
-__version__   = '1.0.15'
+__version__   = '1.0.16'
 
 # =============================================================================
 install_path = indigo.server.getInstallFolderPath()
