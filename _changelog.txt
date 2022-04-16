@@ -1,5 +1,6 @@
 v2022.0.1
 - Updates plugin for Indigo 2022.1 and Python 3.
+- Standardizes Indigo method implementation.
 
 v1.0.15
 - Fixes broken link to readme logo.
@@ -18,8 +19,7 @@ v1.0.11
 - Fixes bug where plugin would error out when no Z-Wave devices present.
 
 v1.0.10
-- Adds asterisk to plugin configuration dialog dropdown menus to indicate
-  default setting.
+- Adds asterisk to plugin configuration dialog dropdown menus to indicate default setting.
 
 v1.0.09
 - Synchronizes version numbers.
@@ -49,13 +49,11 @@ v1.0.02
 
 v1.0.01
 - Takes plugin out of beta.
-- Fixes bug where change in debug level required a plugin restart to take
-  effect.
+- Fixes bug where change in debug level required a plugin restart to take effect.
 - Code refinements.
 
 v0.3.01
-- Fixes bug in listing of nodes for combination devices (multiple devices that
-  use the same address).
+- Fixes bug in listing of nodes for combination devices (multiple devices that use the same address).
 - Fixes bug where font setting only affected the chart's title.
 - Refactors code to establish device plotting properties.
 - Increments Indigo Server API requirement to 2.0
@@ -64,12 +62,10 @@ v0.2.9
 - Refactors plugin method names to PEP 8.
 
 v0.2.8
-- Fixes bug in naming of PluginConfig.xml (which caused problems on systems set
-  up as case-sensitive).
+- Fixes bug in naming of PluginConfig.xml (which caused problems on systems set up as case-sensitive).
 
 v0.2.7
-- Updates plugin update checker to use curl to overcome outdated security of
-  Apple's Python install.
+- Updates plugin update checker to use curl to overcome outdated security of Apple's Python install.
 
 v0.2.6
 - IPS configuration

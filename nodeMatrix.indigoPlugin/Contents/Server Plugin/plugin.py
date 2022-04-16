@@ -28,12 +28,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 try:
     import indigo  # noqa
+#     import pydevd
 except ImportError:
     pass
-# try:
-#     import pydevd
-# except ImportError:
-#     pass
 
 # My modules
 import DLFramework.DLFramework as Dave
@@ -52,21 +49,18 @@ __version__   = '2022.0.1'
 # =============================================================================
 class Plugin(indigo.PluginBase):
     """
-    Title Placeholder
+    Standard Indigo Plugin Class
 
-    Body placeholder
+    :param indigo.PluginBase:
     """
     def __init__(self, plugin_id, plugin_display_name, plugin_version, plugin_prefs):
         """
-        Title Placeholder
-
-        Body placeholder
+        Plugin initialization
 
         :param str plugin_id:
         :param str plugin_display_name:
         :param str plugin_version:
         :param indigo.Dict plugin_prefs:
-        :return:
         """
         super().__init__(plugin_id, plugin_display_name, plugin_version, plugin_prefs)
 
@@ -76,11 +70,11 @@ class Plugin(indigo.PluginBase):
         matplotlib.use('AGG')
 
         log_format = '%(asctime)s.%(msecs)03d\t%(levelname)-10s\t%(name)s.%(funcName)-28s %(msg)s'
-        self.debugLevel = int(self.pluginPrefs.get('showDebugLevel', '30'))
+        self.debug_level = int(self.pluginPrefs.get('showDebugLevel', '30'))
         self.plugin_file_handler.setFormatter(
             logging.Formatter(log_format, datefmt='%Y-%m-%d %H:%M:%S')
         )
-        self.indigo_log_handler.setLevel(self.debugLevel)
+        self.indigo_log_handler.setLevel(self.debug_level)
 
         # ========================== Initialize DLFramework ===========================
         self.Fogbert = Dave.Fogbert(self)
@@ -115,29 +109,32 @@ class Plugin(indigo.PluginBase):
     # =============================================================================
     # ============================== Indigo Methods ===============================
     # =============================================================================
-    def closedPrefsConfigUi(self, values_dict, user_cancelled):  # noqa
+    def closedPrefsConfigUi(self, values_dict=None, user_cancelled=None):  # noqa
         """
-        Title Placeholder
-
-        Body placeholder
+        Standard Indigo method called when plugin preferences dialog is closed.
 
         :param indigo.Dict values_dict:
         :param bool user_cancelled:
         :return:
         """
         if not user_cancelled:
-
             # Ensure that self.pluginPrefs includes any recent changes.
             for k in values_dict:
                 self.pluginPrefs[k] = values_dict[k]
 
-            self.debugLevel = int(values_dict['showDebugLevel'])
-            self.indigo_log_handler.setLevel(self.debugLevel)
+            # Debug Logging
+            self.debug_level = int(values_dict.get('showDebugLevel', "30"))
+            self.indigo_log_handler.setLevel(self.debug_level)
+            indigo.server.log(
+                f"Debugging on (Level: {DEBUG_LABELS[self.debug_level]} ({self.debug_level})"
+            )
 
-            self.logger.debug("User prefs saved.")
+            self.logger.debug("Plugin prefs saved.")
 
         else:
-            self.logger.debug("User prefs cancelled.")
+            self.logger.debug("Plugin prefs cancelled.")
+
+        return values_dict
 
     # =============================================================================
     @staticmethod
@@ -353,8 +350,8 @@ class Plugin(indigo.PluginBase):
             counter += 1
 
         # Dummy dict of devices for testing.  # FIXME - comment out before release
-        from dummy_dict import test_file as device_dict  # pylint: disable=unused-wildcard-import
-        dev_keys = list(device_dict.keys())
+        # from dummy_dict import test_file as device_dict  # pylint: disable=unused-wildcard-import
+        # dev_keys = list(device_dict.keys())
 
         # If the dev_keys dict has zero len, there are no Z-Wave devices to plot.
         if len(dev_keys) < 1:
