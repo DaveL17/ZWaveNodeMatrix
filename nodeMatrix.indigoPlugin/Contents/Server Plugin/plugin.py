@@ -351,7 +351,7 @@ class Plugin(indigo.PluginBase):
 
         # Dummy dict of devices for testing.  # FIXME - comment out before release
         # from dummy_dict import test_file as device_dict  # pylint: disable=unused-wildcard-import
-        # dev_keys = list(device_dict.keys())
+        dev_keys = list(device_dict.keys())
 
         # If the dev_keys dict has zero len, there are no Z-Wave devices to plot.
         if len(dev_keys) < 1:
