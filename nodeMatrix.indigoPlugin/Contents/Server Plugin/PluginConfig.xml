@@ -99,9 +99,14 @@
             <Option value="p">Pentagon</Option>
             <Option value=",">Pixel</Option>
             <Option value="+">Plus</Option>
+            <Option value="P">Plus (filled)</Option>
             <Option value=".">Point*</Option>
             <Option value="*">Star</Option>
             <Option value="s">Square</Option>
+            <Option value="1">Tri Down</Option>
+            <Option value="3">Tri Left</Option>
+            <Option value="4">Tri Right</Option>
+            <Option value="2">Tri Up</Option>
             <Option value="|">Vertical Line</Option>
             <Option value="x">X</Option>
         </List>

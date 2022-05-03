@@ -3,6 +3,7 @@ v2022.0.1
 - Fixes bug where chart height and width settings were reversed.
 - Improves dummy device data (for testing).
 - Adds tight_layout (reduces empty space around chart).
+- Adds new marker styles.
 - Standardizes Indigo method implementation.
 
 v1.0.15
