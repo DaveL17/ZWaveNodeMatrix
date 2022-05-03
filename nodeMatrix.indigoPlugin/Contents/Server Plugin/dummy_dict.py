@@ -1,5 +1,8 @@
 import datetime
 
+now = datetime.datetime.now()
+REPL_DATE = (now.year, now.month, now.day)
+
 test_file = {
     3: {
         'neighbors': [4, 5, 10, 11, 12, 15, 16, 17, 18, 25, 27, 28, 29, 30, 39, 41, 43],
@@ -7,7 +10,7 @@ test_file = {
         'name': u'Master Bedroom - West Bedside Lamp',
         'lost': False,
         'battery': False,
-        'changed': datetime.datetime(2022, 3, 14, 18, 56, 20),
+        'changed': datetime.datetime(1970, 1, 1, 18, 56, 20),
         'no_node_1': False,
         'invalid_neighbor': False
     },
@@ -18,9 +21,9 @@ test_file = {
         ],
         'counter': 2,
         'name': u'Foyer - Lamp',
-        'lost': False,
+        'lost': True,
         'battery': False,
-        'changed': datetime.datetime(2022, 3, 14, 20, 9, 41),
+        'changed': datetime.datetime(REPL_DATE[0], REPL_DATE[1], REPL_DATE[2], 20, 9, 41),
         'no_node_1': False,
         'invalid_neighbor': False
     },
@@ -32,7 +35,7 @@ test_file = {
         'name': u'Outdoor - Front Porch Lights',
         'lost': False,
         'battery': False,
-        'changed': datetime.datetime(2022, 3, 14, 20, 21, 33),
+        'changed': datetime.datetime(REPL_DATE[0], REPL_DATE[1], REPL_DATE[2], 20, 21, 33),
         'no_node_1': False,
         'invalid_neighbor': False
     },
@@ -42,7 +45,7 @@ test_file = {
         'name': u'Outdoor - Garage Side Door Light',
         'lost': False,
         'battery': False,
-        'changed': datetime.datetime(2022, 3, 14, 20, 21, 34),
+        'changed': datetime.datetime(REPL_DATE[0], REPL_DATE[1], REPL_DATE[2], 20, 21, 34),
         'no_node_1': False,
         'invalid_neighbor': False
     },
@@ -52,7 +55,7 @@ test_file = {
         'name': u'Garage - Motion',
         'lost': False,
         'battery': True,
-        'changed': datetime.datetime(2022, 3, 14, 18, 4, 5),
+        'changed': datetime.datetime(REPL_DATE[0], REPL_DATE[1], REPL_DATE[2], 18, 4, 5),
         'no_node_1': False,
         'invalid_neighbor': False
     },
@@ -62,7 +65,7 @@ test_file = {
         'name': u'Living Room - Outlet North',
         'lost': False,
         'battery': False,
-        'changed': datetime.datetime(2022, 3, 14, 20, 9, 34),
+        'changed': datetime.datetime(REPL_DATE[0], REPL_DATE[1], REPL_DATE[2], 20, 9, 34),
         'no_node_1': False,
         'invalid_neighbor': False
     },
@@ -74,7 +77,7 @@ test_file = {
         'name': u'Thermostat - Downstairs',
         'lost': False,
         'battery': False,
-        'changed': datetime.datetime(2022, 3, 14, 19, 48, 16),
+        'changed': datetime.datetime(REPL_DATE[0], REPL_DATE[1], REPL_DATE[2], 19, 48, 16),
         'no_node_1': False,
         'invalid_neighbor': False
     },
@@ -86,7 +89,7 @@ test_file = {
         'name': u'Basement - Humidifier',
         'lost': False,
         'battery': False,
-        'changed': datetime.datetime(2022, 3, 14, 20, 30, 1),
+        'changed': datetime.datetime(REPL_DATE[0], REPL_DATE[1], REPL_DATE[2], 20, 30, 1),
         'no_node_1': False,
         'invalid_neighbor': False
     },
@@ -96,7 +99,7 @@ test_file = {
         'name': u'Dining Room - Motion',
         'lost': False,
         'battery': True,
-        'changed': datetime.datetime(2022, 3, 14, 20, 2, 2),
+        'changed': datetime.datetime(REPL_DATE[0], REPL_DATE[1], REPL_DATE[2], 20, 2, 2),
         'no_node_1': False,
         'invalid_neighbor': False
     },
@@ -106,7 +109,7 @@ test_file = {
         'name': u'Living Room - Desk Lamp',
         'lost': False,
         'battery': False,
-        'changed': datetime.datetime(2022, 3, 14, 20, 9, 34),
+        'changed': datetime.datetime(REPL_DATE[0], REPL_DATE[1], REPL_DATE[2], 20, 9, 34),
         'no_node_1': False,
         'invalid_neighbor': False
     },
@@ -116,7 +119,7 @@ test_file = {
         'name': u'Living Room - Vase',
         'lost': False,
         'battery': False,
-        'changed': datetime.datetime(2022, 3, 14, 20, 9, 34),
+        'changed': datetime.datetime(REPL_DATE[0], REPL_DATE[1], REPL_DATE[2], 20, 9, 34),
         'no_node_1': False,
         'invalid_neighbor': False
     },
@@ -125,7 +128,7 @@ test_file = {
         'counter': 12, 'name': u'Living Room - TV',
         'lost': False,
         'battery': False,
-        'changed': datetime.datetime(2022, 3, 14, 18, 57, 33),
+        'changed': datetime.datetime(REPL_DATE[0], REPL_DATE[1], REPL_DATE[2], 18, 57, 33),
         'no_node_1': False,
         'invalid_neighbor': False
     },
@@ -135,7 +138,7 @@ test_file = {
         'name': u'Outdoor - Back Porch Light',
         'lost': False,
         'battery': False,
-        'changed': datetime.datetime(2022, 3, 14, 20, 21, 34),
+        'changed': datetime.datetime(REPL_DATE[0], REPL_DATE[1], REPL_DATE[2], 20, 21, 34),
         'no_node_1': False,
         'invalid_neighbor': False
     },
@@ -145,7 +148,7 @@ test_file = {
         'name': u'Outdoor - Septic Pump',
         'lost': False,
         'battery': False,
-        'changed': datetime.datetime(2022, 3, 14, 20, 53, 28),
+        'changed': datetime.datetime(REPL_DATE[0], REPL_DATE[1], REPL_DATE[2], 20, 53, 28),
         'no_node_1': False,
         'invalid_neighbor': False
     },
@@ -155,7 +158,7 @@ test_file = {
         'name': u'Kitchen - Cabinets North',
         'lost': False,
         'battery': False,
-        'changed': datetime.datetime(2022, 3, 14, 20, 53, 19),
+        'changed': datetime.datetime(REPL_DATE[0], REPL_DATE[1], REPL_DATE[2], 20, 53, 19),
         'no_node_1': False,
         'invalid_neighbor': False
     },
@@ -165,7 +168,7 @@ test_file = {
         'name': u'Kitchen - Cabinets South',
         'lost': False,
         'battery': False,
-        'changed': datetime.datetime(2022, 3, 14, 20, 53, 26),
+        'changed': datetime.datetime(REPL_DATE[0], REPL_DATE[1], REPL_DATE[2], 20, 53, 26),
         'no_node_1': False,
         'invalid_neighbor': False
     },
@@ -175,7 +178,7 @@ test_file = {
         'name': u'Outdoor - Path Lights Rear North',
         'lost': False,
         'battery': False,
-        'changed': datetime.datetime(2022, 3, 14, 20, 21, 34),
+        'changed': datetime.datetime(REPL_DATE[0], REPL_DATE[1], REPL_DATE[2], 20, 21, 34),
         'no_node_1': False,
         'invalid_neighbor': False
     },
@@ -185,7 +188,7 @@ test_file = {
         'name': u'Outdoor - Path Lights Front North',
         'lost': False,
         'battery': False,
-        'changed': datetime.datetime(2022, 3, 14, 20, 21, 34),
+        'changed': datetime.datetime(REPL_DATE[0], REPL_DATE[1], REPL_DATE[2], 20, 21, 34),
         'no_node_1': False,
         'invalid_neighbor': False
     },
@@ -195,7 +198,7 @@ test_file = {
         'name': u'Outdoor - Path Lights Front South',
         'lost': False,
         'battery': False,
-        'changed': datetime.datetime(2022, 3, 14, 20, 21, 34),
+        'changed': datetime.datetime(REPL_DATE[0], REPL_DATE[1], REPL_DATE[2], 20, 21, 34),
         'no_node_1': False,
         'invalid_neighbor': False
     },
@@ -205,7 +208,7 @@ test_file = {
          'name': u'Basement - Energy Meter 1',
          'lost': False,
          'battery': False,
-         'changed': datetime.datetime(2022, 3, 14, 20, 45, 6),
+         'changed': datetime.datetime(REPL_DATE[0], REPL_DATE[1], REPL_DATE[2], 20, 45, 6),
          'no_node_1': False,
          'invalid_neighbor': False
     },
@@ -214,7 +217,7 @@ test_file = {
          'counter': 21,
          'name': u'Basement - Energy Meter 2',
          'lost': False, 'battery': False,
-         'changed': datetime.datetime(2022, 3, 14, 20, 49, 23),
+         'changed': datetime.datetime(REPL_DATE[0], REPL_DATE[1], REPL_DATE[2], 20, 49, 23),
          'no_node_1': False,
          'invalid_neighbor': False
     },
@@ -224,7 +227,7 @@ test_file = {
          'name': u'Main Attic - Motion',
          'lost': False,
          'battery': True,
-         'changed': datetime.datetime(2022, 3, 14, 12, 52, 6),
+         'changed': datetime.datetime(REPL_DATE[0], REPL_DATE[1], REPL_DATE[2], 12, 52, 6),
          'no_node_1': False,
          'invalid_neighbor': False
     },
@@ -234,7 +237,7 @@ test_file = {
         'name': u'Outdoor - Luminance',
         'lost': False,
         'battery': True,
-        'changed': datetime.datetime(2022, 3, 14, 20, 42, 29),
+        'changed': datetime.datetime(REPL_DATE[0], REPL_DATE[1], REPL_DATE[2], 20, 42, 29),
         'no_node_1': False,
         'invalid_neighbor': False
     },
@@ -246,7 +249,7 @@ test_file = {
         'name': u'Foyer - Upstairs Smoke',
         'lost': False,
         'battery': True,
-        'changed': datetime.datetime(2022, 3, 14, 9, 55, 55),
+        'changed': datetime.datetime(REPL_DATE[0], REPL_DATE[1], REPL_DATE[2], 9, 55, 55),
         'no_node_1': False,
         'invalid_neighbor': False
     },
@@ -259,7 +262,7 @@ test_file = {
         'name': u'Foyer - Main Floor Smoke',
         'lost': False,
         'battery': True,
-        'changed': datetime.datetime(2022, 3, 14, 16, 27, 24),
+        'changed': datetime.datetime(REPL_DATE[0], REPL_DATE[1], REPL_DATE[2], 16, 27, 24),
         'no_node_1': False,
         'invalid_neighbor': False
     },
@@ -271,7 +274,7 @@ test_file = {
         'name': u'Basement - Smoke',
         'lost': False,
         'battery': True,
-        'changed': datetime.datetime(2022, 3, 14, 4, 37, 16),
+        'changed': datetime.datetime(REPL_DATE[0], REPL_DATE[1], REPL_DATE[2], 4, 37, 16),
         'no_node_1': False,
         'invalid_neighbor': False
     },
@@ -281,7 +284,7 @@ test_file = {
         'name': u'Garage - Side Door',
         'lost': False,
         'battery': True,
-        'changed': datetime.datetime(2022, 3, 14, 20, 35, 24),
+        'changed': datetime.datetime(REPL_DATE[0], REPL_DATE[1], REPL_DATE[2], 20, 35, 24),
         'no_node_1': False,
         'invalid_neighbor': False
     },
@@ -294,7 +297,7 @@ test_file = {
         'name': u'Guest Bathroom - Exhaust Fan',
         'lost': False,
         'battery': False,
-        'changed': datetime.datetime(2022, 3, 14, 10, 18, 5),
+        'changed': datetime.datetime(REPL_DATE[0], REPL_DATE[1], REPL_DATE[2], 10, 18, 5),
         'no_node_1': False,
         'invalid_neighbor': False
     },
@@ -303,7 +306,7 @@ test_file = {
         'counter': 29,
         'name': u'Master Bedroom - Star Lamp',
         'lost': False, 'battery': False,
-        'changed': datetime.datetime(2022, 3, 14, 20, 9, 34),
+        'changed': datetime.datetime(REPL_DATE[0], REPL_DATE[1], REPL_DATE[2], 20, 9, 34),
         'no_node_1': False,
         'invalid_neighbor': False
     }, 41: {
@@ -314,7 +317,7 @@ test_file = {
         'name': u'Workshop - Fibaro RGBW',
         'lost': False,
         'battery': False,
-        'changed': datetime.datetime(2022, 3, 14, 18, 59, 23),
+        'changed': datetime.datetime(REPL_DATE[0], REPL_DATE[1], REPL_DATE[2], 18, 59, 23),
         'no_node_1': False,
         'invalid_neighbor': False
     },
@@ -324,7 +327,7 @@ test_file = {
         'name': u'Basement - Dehumidifier',
         'lost': False,
         'battery': False,
-        'changed': datetime.datetime(2022, 3, 14, 20, 43, 17),
+        'changed': datetime.datetime(REPL_DATE[0], REPL_DATE[1], REPL_DATE[2], 20, 43, 17),
         'no_node_1': False, 'invalid_neighbor': False
     }, 43: {
         'neighbors': [
@@ -335,7 +338,7 @@ test_file = {
         'name': u'Thermostat - Upstairs',
         'lost': False,
         'battery': False,
-        'changed': datetime.datetime(2022, 3, 14, 20, 40, 47),
+        'changed': datetime.datetime(REPL_DATE[0], REPL_DATE[1], REPL_DATE[2], 20, 40, 47),
         'no_node_1': False,
         'invalid_neighbor': False
     },
@@ -344,7 +347,7 @@ test_file = {
          'name': u'Outdoor - Garage Driveway Lights',
          'lost': False,
          'battery': False,
-         'changed': datetime.datetime(2022, 3, 14, 20, 21, 33),
+         'changed': datetime.datetime(REPL_DATE[0], REPL_DATE[1], REPL_DATE[2], 20, 21, 33),
          'no_node_1': False,
          'invalid_neighbor': False
          },
@@ -353,7 +356,7 @@ test_file = {
          'name': u'Main Attic - Ventilation Fan',
          'lost': False,
          'battery': False,
-         'changed': datetime.datetime(2022, 3, 14, 20, 0, 37),
+         'changed': datetime.datetime(REPL_DATE[0], REPL_DATE[1], REPL_DATE[2], 20, 0, 37),
          'no_node_1': False,
          'invalid_neighbor': False
          },
@@ -362,7 +365,7 @@ test_file = {
          'name': u'Basement - Cable Modem',
          'lost': False,
          'battery': False,
-         'changed': datetime.datetime(2022, 3, 14, 20, 50, 24),
+         'changed': datetime.datetime(REPL_DATE[0], REPL_DATE[1], REPL_DATE[2], 20, 50, 24),
          'no_node_1': False,
          'invalid_neighbor': False
          }

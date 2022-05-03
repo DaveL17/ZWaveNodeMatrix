@@ -295,7 +295,8 @@ class Plugin(indigo.PluginBase):
         if override_chart_size:
             chart_height = int(self.pluginPrefs.get('chartHeight', 7))
             chart_width  = int(self.pluginPrefs.get('chartWidth', 7))
-            plt.figure(figsize=(chart_height, chart_width))
+            # plt.figure(figsize=(chart_height, chart_width))
+            plt.figure(figsize=(chart_width, chart_height))
 
         # ========================== Build Master Dictionary ==========================
         # Build the master dictionary of the Z-Wave Mesh Network.
@@ -599,6 +600,7 @@ class Plugin(indigo.PluginBase):
 
         # ==================== Output the Z-Wave Node Matrix Image ====================
         try:
+            plt.tight_layout()
             plt.savefig(output_file, **kwarg_savefig)
         except Exception:  # noqa
             self.logger.debug("Chart output error.", exc_info=True)
