@@ -43,7 +43,7 @@ __copyright__ = Dave.__copyright__
 __license__   = Dave.__license__
 __build__     = Dave.__build__
 __title__     = 'Z-Wave Node Matrix Plugin'
-__version__   = '2022.0.1'
+__version__   = '2022.0.2'
 
 
 # =============================================================================
@@ -350,8 +350,8 @@ class Plugin(indigo.PluginBase):
             device_dict[key]['counter'] = counter
             counter += 1
 
-        # Dummy dict of devices for testing.  # FIXME - comment out before release
-        from dummy_dict import test_file as device_dict  # pylint: disable=unused-wildcard-import
+        # Dummy dict of devices for testing.  FIXME - comment out before release
+        # from dummy_dict import test_file as device_dict  # pylint: disable=unused-wildcard-import
         dev_keys = list(device_dict.keys())
 
         # If the dev_keys dict has zero len, there are no Z-Wave devices to plot.
