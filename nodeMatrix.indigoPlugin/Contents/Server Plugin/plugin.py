@@ -9,8 +9,6 @@ some optional supplemental information including missing devices (no communicati
 timeframe), highlights battery devices (which may not be completely up-to-date), neighbors that no
 longer exist, and so on.
 """
-# =================================== TO DO ===================================
-# TODO: None
 
 # ================================== IMPORTS ==================================
 
@@ -20,12 +18,12 @@ import logging
 from os import path
 
 # Third-party modules
-import matplotlib
+import numpy as np  # noqa - included in Indigo Python 3 install
+import matplotlib  # noqa - included in Indigo Python 3 install
 # Note: this statement must be run before any other matplotlib imports are done.
 matplotlib.use('AGG')
 import matplotlib.font_manager as fnt
 import matplotlib.pyplot as plt
-import numpy as np
 try:
     import indigo  # noqa
 #     import pydevd
@@ -43,7 +41,7 @@ __copyright__ = Dave.__copyright__
 __license__   = Dave.__license__
 __build__     = Dave.__build__
 __title__     = 'Z-Wave Node Matrix Plugin'
-__version__   = '2022.0.2'
+__version__   = '2022.0.4'
 
 
 # =============================================================================
@@ -78,8 +76,6 @@ class Plugin(indigo.PluginBase):
 
         # ========================== Initialize DLFramework ===========================
         self.Fogbert = Dave.Fogbert(self)
-        # Log pluginEnvironment information when plugin is first started
-        self.Fogbert.pluginEnvironment()
 
         # ============================= Remote Debugging ==============================
         # try:
@@ -94,6 +90,12 @@ class Plugin(indigo.PluginBase):
         #     pass
 
         self.pluginIsInitializing = False
+
+    def log_plugin_environment(self):
+        """
+        Log pluginEnvironment information when plugin is first started
+        """
+        self.Fogbert.pluginEnvironment()
 
     # =============================================================================
     def __del__(self):
@@ -308,14 +310,14 @@ class Plugin(indigo.PluginBase):
         for dev in indigo.devices.itervalues('indigo.zwave'):
 
             dev_address = int(dev.address)
-            neighbors   = list(dev.globalProps[self.plugin_id].get('zwNodeNeighbors', []))
+            neighbors   = list(dev.globalProps['com.perceptiveautomation.indigoplugin.zwave'].get('zwNodeNeighbors', []))
 
             # New device address
             if dev_address not in device_dict:
                 device_dict[dev_address] = {}
 
                 device_dict[dev_address]['battery'] = (
-                    dev.globalProps[self.plugin_id].get('SupportsBatteryLevel', False)
+                    dev.globalProps['com.perceptiveautomation.indigoplugin.zwave'].get('SupportsBatteryLevel', False)
                 )
                 device_dict[dev_address]['changed']          = dev.lastChanged
                 device_dict[dev_address]['invalid_neighbor'] = False
@@ -330,7 +332,7 @@ class Plugin(indigo.PluginBase):
             # empty)
             elif dev_address in device_dict and neighbors:
                 device_dict[dev_address]['battery'] = (
-                    dev.globalProps[self.plugin_id].get('SupportsBatteryLevel', False)
+                    dev.globalProps['com.perceptiveautomation.indigoplugin.zwave'].get('SupportsBatteryLevel', False)
                 )
                 device_dict[dev_address]['changed']   = dev.lastChanged
                 device_dict[dev_address]['invalid_neighbor'] = False
