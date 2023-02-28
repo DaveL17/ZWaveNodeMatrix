@@ -41,7 +41,7 @@ __copyright__ = Dave.__copyright__
 __license__   = Dave.__license__
 __build__     = Dave.__build__
 __title__     = 'Z-Wave Node Matrix Plugin'
-__version__   = '2022.0.4'
+__version__   = '2022.0.5'
 
 
 # =============================================================================
@@ -63,11 +63,11 @@ class Plugin(indigo.PluginBase):
         super().__init__(plugin_id, plugin_display_name, plugin_version, plugin_prefs)
 
         # ============================= Instance Variables =============================
-        self.pluginIsInitializing = True
-        self.pluginIsShuttingDown = False
+        self.plugin_is_initializing = True
+        self.plugin_is_shutting_down = False
         matplotlib.use('AGG')
 
-        log_format = '%(asctime)s.%(msecs)03d\t%(levelname)-10s\t%(name)s.%(funcName)-28s %(msg)s'
+        log_format = '%(asctime)s.%(msecs)03d\t%(levelname)-10s\t%(name)s.%(funcName)-28s %(message)s'
         self.debug_level = int(self.pluginPrefs.get('showDebugLevel', '30'))
         self.plugin_file_handler.setFormatter(
             logging.Formatter(log_format, datefmt='%Y-%m-%d %H:%M:%S')
@@ -79,17 +79,11 @@ class Plugin(indigo.PluginBase):
 
         # ============================= Remote Debugging ==============================
         # try:
-        #     pydevd.settrace(
-        #         'localhost',
-        #         port=5678,
-        #         stdoutToServer=True,
-        #         stderrToServer=True,
-        #         suspend=False
-        #     )
+        #     pydevd.settrace( 'localhost', port=5678, stdoutToServer=True, stderrToServer=True, suspend=False)
         # except:
         #     pass
 
-        self.pluginIsInitializing = False
+        self.plugin_is_initializing = False
 
     def log_plugin_environment(self):
         """
@@ -174,7 +168,7 @@ class Plugin(indigo.PluginBase):
 
         :return:
         """
-        self.pluginIsShuttingDown = True
+        self.plugin_is_shutting_down = True
 
     # =============================================================================
     # ============================== Plugin Methods ===============================
@@ -206,56 +200,45 @@ class Plugin(indigo.PluginBase):
 
         :return:
         """
-        bk_color = self.pluginPrefs.get('backgroundColor', '00 00 00')
-        background_color = f"#{bk_color.replace(' ', '').replace('#', '')}"
-        chart_title = self.pluginPrefs.get('chartTitle', 'Z-Wave Node Matrix')
-        chart_title_font = int(self.pluginPrefs.get('chartTitleFont', 9))
-        fnt_color = self.pluginPrefs.get('foregroundColor', '88 88 88')
-        font_color = f"#{fnt_color.replace(' ', '').replace('#', '')}"
-        font_name = self.pluginPrefs.get('fontMain', 'Arial')
-        fore_color = self.pluginPrefs.get('foregroundColor', '88 88 88')
-        foreground_color = f"#{fore_color.replace(' ', '').replace('#', '')}"
-        node_color = f"#{self.pluginPrefs.get('nodeColor', 'FF FF FF').replace(' ', '')}"
-        nd_clr_border = self.pluginPrefs.get('nodeBorderColor', '66 FF 00')
-        node_color_border = f"#{nd_clr_border.replace(' ', '').replace('#', '')}"
-        node_marker = self.pluginPrefs.get('nodeMarker', '.')
+        bk_color               = self.pluginPrefs.get('backgroundColor', '00 00 00')
+        background_color       = f"#{bk_color.replace(' ', '').replace('#', '')}"
+        chart_title            = self.pluginPrefs.get('chartTitle', 'Z-Wave Node Matrix')
+        chart_title_font       = int(self.pluginPrefs.get('chartTitleFont', 9))
+        fnt_color              = self.pluginPrefs.get('foregroundColor', '88 88 88')
+        font_color             = f"#{fnt_color.replace(' ', '').replace('#', '')}"
+        font_name              = self.pluginPrefs.get('fontMain', 'Arial')
+        fore_color             = self.pluginPrefs.get('foregroundColor', '88 88 88')
+        foreground_color       = f"#{fore_color.replace(' ', '').replace('#', '')}"
+        node_color             = f"#{self.pluginPrefs.get('nodeColor', 'FF FF FF').replace(' ', '')}"
+        nd_clr_border          = self.pluginPrefs.get('nodeBorderColor', '66 FF 00')
+        node_color_border      = f"#{nd_clr_border.replace(' ', '').replace('#', '')}"
+        node_marker            = self.pluginPrefs.get('nodeMarker', '.')
         node_marker_edge_width = self.pluginPrefs.get('nodeMarkerEdgewidth', '1')
-        file_path = (
-            '/Library/Application Support/Perceptive Automation/Indigo 2022.1/IndigoWebServer/'
-            'images/controls/static/neighbors.png'
-        )
-        output_file    = self.pluginPrefs.get('chartPath', file_path)
-        tick_font_size = int(self.pluginPrefs.get('tickLabelFont', 6))
-        x_axis_label   = self.pluginPrefs.get('xAxisLabel', 'node')
-        x_axis_rotate  = int(self.pluginPrefs.get('xAxisRotate', 0))
-        y_axis_label   = self.pluginPrefs.get('yAxisLabel', 'neighbor')
+        file_path              = f"{INSTALL_PATH}Web Assets/images/controls/static/neighbors.png"
+        output_file            = self.pluginPrefs.get('chartPath', file_path)
+        tick_font_size         = int(self.pluginPrefs.get('tickLabelFont', 6))
+        x_axis_label           = self.pluginPrefs.get('xAxisLabel', 'node')
+        x_axis_rotate          = int(self.pluginPrefs.get('xAxisRotate', 0))
+        y_axis_label           = self.pluginPrefs.get('yAxisLabel', 'neighbor')
 
         # If True, each node that is battery powered will be highlighted.
         plot_battery = self.pluginPrefs.get('plotBattery', False)
-        battery_color = (
-            self.pluginPrefs.get('plotBatteryColor', 'FF 00 00').replace(' ', '').replace('#', '')
-        )
+        battery_color = (self.pluginPrefs.get('plotBatteryColor', 'FF 00 00').replace(' ', '').replace('#', ''))
         plot_battery_color = f"#{battery_color}"
 
         # If True, devices with node 1 missing will be highlighted.
         plot_no_node_1 = self.pluginPrefs.get('plotNoNode1', False)
-        node_color_1 = (
-            self.pluginPrefs.get('plotNoNode1Color', 'FF 00 00').replace(' ', '').replace('#', '')
-        )
+        node_color_1 = (self.pluginPrefs.get('plotNoNode1Color', 'FF 00 00').replace(' ', '').replace('#', ''))
         plot_no_node_1_color = f"#{node_color_1}"
 
         # If True, neighbors without a corresponding node will be highlighted.
         plot_no_node = self.pluginPrefs.get('plotNoNode', False)
-        no_node_color = (
-            self.pluginPrefs.get('plotNoNodeColor', '00 33 FF').replace(' ', '').replace('#', '')
-        )
+        no_node_color = (self.pluginPrefs.get('plotNoNodeColor', '00 33 FF').replace(' ', '').replace('#', ''))
         plot_no_node_color = f"#{no_node_color}"
 
         # If True, each node will be plotted as its own neighbor.
         plot_self = self.pluginPrefs.get('plotOwnNodes', False)
-        own_node_color = (
-            self.pluginPrefs.get('plotOwnNodesColor', '33 33 33').replace(' ', '').replace('#', '')
-        )
+        own_node_color = (self.pluginPrefs.get('plotOwnNodesColor', '33 33 33').replace(' ', '').replace('#', ''))
         plot_self_color = f"#{own_node_color}"
 
         # If True, unused node addresses will be plotted.
@@ -271,8 +254,7 @@ class Plugin(indigo.PluginBase):
         # time (days.)
         plot_lost_devices  = self.pluginPrefs.get('plotLostDevices', False)
         update_delta       = int(self.pluginPrefs.get('plotLostDevicesTimeDelta', 7))
-        lost_device        = self.pluginPrefs.get(
-            'plotLostDevicesColor', '66 00 CC').replace(' ', '').replace('#', '')
+        lost_device        = self.pluginPrefs.get('plotLostDevicesColor', '66 00 CC').replace(' ', '').replace('#', '')
         lost_devices_color = f"#{lost_device}"
 
         # ================================== kwargs ===================================
@@ -297,7 +279,6 @@ class Plugin(indigo.PluginBase):
         if override_chart_size:
             chart_height = int(self.pluginPrefs.get('chartHeight', 7))
             chart_width  = int(self.pluginPrefs.get('chartWidth', 7))
-            # plt.figure(figsize=(chart_height, chart_width))
             plt.figure(figsize=(chart_width, chart_height))
 
         # ========================== Build Master Dictionary ==========================
@@ -307,10 +288,12 @@ class Plugin(indigo.PluginBase):
         neighbor_list = []
 
         # Iterate through all the Z-Wave devices and build a master dictionary.
-        for dev in indigo.devices.itervalues('indigo.zwave'):
+        for dev in indigo.devices.iter('indigo.zwave'):
 
             dev_address = int(dev.address)
-            neighbors   = list(dev.globalProps['com.perceptiveautomation.indigoplugin.zwave'].get('zwNodeNeighbors', []))
+            neighbors   = (
+                list(dev.globalProps['com.perceptiveautomation.indigoplugin.zwave'].get('zwNodeNeighbors', []))
+            )
 
             # New device address
             if dev_address not in device_dict:
@@ -345,15 +328,14 @@ class Plugin(indigo.PluginBase):
             else:
                 pass
 
-        # Add a counter value to each device which is used to display a compressed X axis (show
-        # unused nodes = False)
+        # Add a counter value to each device which is used to display a compressed X axis (show unused nodes = False)
         counter = 1
         for key in sorted(device_dict):
             device_dict[key]['counter'] = counter
             counter += 1
 
         # Dummy dict of devices for testing.  FIXME - comment out before release
-        # from dummy_dict import test_file as device_dict  # pylint: disable=unused-wildcard-import
+        from dummy_dict import test_file as device_dict  # pylint: disable=unused-wildcard-import
         dev_keys = list(device_dict.keys())
 
         # If the dev_keys dict has zero len, there are no Z-Wave devices to plot.
@@ -371,9 +353,7 @@ class Plugin(indigo.PluginBase):
             # Device is lost
             device_delta = (datetime.datetime.now() - device_dict[node]['changed'])
             if device_delta > datetime.timedelta(days=update_delta):
-                self.logger.warning(
-                    f"Lost Device - {node} [Node {device_dict[node]['name']}] {device_delta}"
-                )
+                self.logger.warning(f"Lost Device - {node} [Node {device_dict[node]['name']}] {device_delta}")
                 device_dict[node]['lost'] = True
 
             # Lists neighbor that is not an active address
@@ -462,14 +442,10 @@ class Plugin(indigo.PluginBase):
         plt.title(chart_title, **kwarg_title)
         for spine in ('top', 'bottom', 'left', 'right'):
             plt.gca().spines[spine].set_color(foreground_color)
-        plt.tick_params(
-            axis='both', which='both', labelsize=tick_font_size, color=foreground_color
-        )
+        plt.tick_params(axis='both', which='both', labelsize=tick_font_size, color=foreground_color)
 
         # ============================== X Axis Settings ==============================
-        plt.xlabel(
-            x_axis_label, fontname=font_name, fontsize=chart_title_font, color=foreground_color
-        )
+        plt.xlabel(x_axis_label, fontname=font_name, fontsize=chart_title_font, color=foreground_color)
         plt.tick_params(axis='x', bottom=True, top=False)
 
         if plot_unused_nodes:
@@ -486,15 +462,11 @@ class Plugin(indigo.PluginBase):
             plt.xlim(0, len(device_dict) + 1)
 
         # ============================== Y Axis Settings ==============================
-        plt.ylabel(
-            y_axis_label, fontname=font_name, fontsize=chart_title_font, color=foreground_color
-        )
+        plt.ylabel(y_axis_label, fontname=font_name, fontsize=chart_title_font, color=foreground_color)
         plt.tick_params(axis='y', left=True, right=False)
 
         if plot_unused_nodes:
-            plt.yticks(
-                np.arange(1, max(dev_keys) + 1, 1), fontsize=tick_font_size, color=foreground_color
-            )
+            plt.yticks(np.arange(1, max(dev_keys) + 1, 1), fontsize=tick_font_size, color=foreground_color)
             plt.ylim(0, max(dev_keys) + 1)
         else:
             plt.yticks(

@@ -1,6 +1,10 @@
+### v2022.0.5
+- Updates plugin API to `3.2`.
+- Code refinement.
+
 ### v2022.0.4
 - Adds foundation for API `3.1`.
-- Fixes bug where plugin searches for Z-wave devices.
+- Fixes bug where plugin searches for Z-Wave devices.
 
 ### v2022.0.3
 - Adds `_to_do_list.md` and changes changelog to markdown.
