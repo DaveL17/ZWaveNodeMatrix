@@ -1,3 +1,6 @@
+### v2023.1.0
+- Code refinements
+
 ### v2022.0.5
 - Updates plugin API to `3.2`.
 - Code refinement.

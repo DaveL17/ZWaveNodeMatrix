@@ -4,10 +4,9 @@
 Z-Wave Node Matrix Indigo Plugin
 author: DaveL17
 
-Generates a graphical matrix of all Z-Wave devices and their neighbors. The plugin also provides
-some optional supplemental information including missing devices (no communication for selected
-timeframe), highlights battery devices (which may not be completely up-to-date), neighbors that no
-longer exist, and so on.
+Generates a graphical matrix of all Z-Wave devices and their neighbors. The plugin also provides some optional
+supplemental information including missing devices (no communication for selected timeframe), highlights battery
+devices (which may not be completely up-to-date), neighbors that no longer exist, and so on.
 """
 
 # ================================== IMPORTS ==================================
@@ -26,13 +25,13 @@ import matplotlib.font_manager as fnt
 import matplotlib.pyplot as plt
 try:
     import indigo  # noqa
-#     import pydevd
+    # import pydevd
 except ImportError:
     pass
 
 # My modules
 import DLFramework.DLFramework as Dave
-from constants import *  # noqa, pylint: disable=unused-wildcard-import
+from constants import DEBUG_LABELS, INSTALL_PATH
 from plugin_defaults import kDefaultPluginPrefs  # noqa
 
 # =================================== HEADER ==================================
@@ -41,7 +40,7 @@ __copyright__ = Dave.__copyright__
 __license__   = Dave.__license__
 __build__     = Dave.__build__
 __title__     = 'Z-Wave Node Matrix Plugin'
-__version__   = '2022.0.5'
+__version__   = '2023.1.0'
 
 
 # =============================================================================
@@ -105,7 +104,7 @@ class Plugin(indigo.PluginBase):
     # =============================================================================
     # ============================== Indigo Methods ===============================
     # =============================================================================
-    def closedPrefsConfigUi(self, values_dict=None, user_cancelled=None):  # noqa
+    def closedPrefsConfigUi(self, values_dict:indigo.Dict=None, user_cancelled:bool=None):  # noqa
         """
         Standard Indigo method called when plugin preferences dialog is closed.
 
@@ -134,7 +133,7 @@ class Plugin(indigo.PluginBase):
 
     # =============================================================================
     @staticmethod
-    def sendDevicePing(dev_id=0, suppress_logging=False):  # noqa
+    def sendDevicePing(dev_id:int=0, suppress_logging:bool=False):  # noqa
         """
         Title Placeholder
 
@@ -174,7 +173,7 @@ class Plugin(indigo.PluginBase):
     # ============================== Plugin Methods ===============================
     # =============================================================================
     @staticmethod
-    def get_font_list(fltr="", type_id=0, values_dict=None, target_id=0):  # noqa
+    def get_font_list(fltr:str="", values_dict:indigo.Dict=None, type_id:int=0, target_id:int=0):  # noqa
         """
         Returns a list of available TrueType fonts
 
@@ -182,8 +181,8 @@ class Plugin(indigo.PluginBase):
         matplotlib can see, not necessarily all the fonts installed on the system.
 
         :param str fltr:
-        :param str type_id:
         :param indigo.Dict values_dict:
+        :param str type_id:
         :param int target_id:
         :return:
         """
@@ -585,7 +584,7 @@ class Plugin(indigo.PluginBase):
         self.logger.info("Z-Wave Node Matrix generated.")
 
     # =============================================================================
-    def make_the_matrix_action(self, values_dict):  # noqa
+    def make_the_matrix_action(self, values_dict:indigo.Dict):  # noqa
         """
         Respond to menu call to generate a new image
 
