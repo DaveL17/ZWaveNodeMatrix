@@ -263,10 +263,10 @@ class Plugin(indigo.PluginBase):
             'edgecolor': background_color,
             'facecolor': background_color,
             'format': None,
-            'frameon': None,
+            # 'frameon': None,
             'orientation': None,
             'pad_inches': 0.1,
-            'papertype': None,
+            # 'papertype': None,
             'transparent': True
         }
         kwarg_title = {
