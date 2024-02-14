@@ -62,15 +62,12 @@ class Plugin(indigo.PluginBase):
         super().__init__(plugin_id, plugin_display_name, plugin_version, plugin_prefs)
 
         # ============================= Instance Variables =============================
-        self.plugin_is_initializing = True
+        self.plugin_is_initializing  = True
         self.plugin_is_shutting_down = False
         matplotlib.use('AGG')
 
-        log_format = '%(asctime)s.%(msecs)03d\t%(levelname)-10s\t%(name)s.%(funcName)-28s %(message)s'
         self.debug_level = int(self.pluginPrefs.get('showDebugLevel', '30'))
-        self.plugin_file_handler.setFormatter(
-            logging.Formatter(log_format, datefmt='%Y-%m-%d %H:%M:%S')
-        )
+        self.plugin_file_handler.setFormatter(logging.Formatter(Dave.LOG_FORMAT, datefmt='%Y-%m-%d %H:%M:%S'))
         self.indigo_log_handler.setLevel(self.debug_level)
 
         # ========================== Initialize DLFramework ===========================
@@ -120,10 +117,7 @@ class Plugin(indigo.PluginBase):
             # Debug Logging
             self.debug_level = int(values_dict.get('showDebugLevel', "30"))
             self.indigo_log_handler.setLevel(self.debug_level)
-            indigo.server.log(
-                f"Debugging on (Level: {DEBUG_LABELS[self.debug_level]} ({self.debug_level})"
-            )
-
+            indigo.server.log(f"Debugging on (Level: {DEBUG_LABELS[self.debug_level]} ({self.debug_level})")
             self.logger.debug("Plugin prefs saved.")
 
         else:
@@ -221,23 +215,23 @@ class Plugin(indigo.PluginBase):
         y_axis_label           = self.pluginPrefs.get('yAxisLabel', 'neighbor')
 
         # If True, each node that is battery powered will be highlighted.
-        plot_battery = self.pluginPrefs.get('plotBattery', False)
-        battery_color = (self.pluginPrefs.get('plotBatteryColor', 'FF 00 00').replace(' ', '').replace('#', ''))
+        plot_battery       = self.pluginPrefs.get('plotBattery', False)
+        battery_color      = (self.pluginPrefs.get('plotBatteryColor', 'FF 00 00').replace(' ', '').replace('#', ''))
         plot_battery_color = f"#{battery_color}"
 
         # If True, devices with node 1 missing will be highlighted.
-        plot_no_node_1 = self.pluginPrefs.get('plotNoNode1', False)
-        node_color_1 = (self.pluginPrefs.get('plotNoNode1Color', 'FF 00 00').replace(' ', '').replace('#', ''))
+        plot_no_node_1       = self.pluginPrefs.get('plotNoNode1', False)
+        node_color_1         = (self.pluginPrefs.get('plotNoNode1Color', 'FF 00 00').replace(' ', '').replace('#', ''))
         plot_no_node_1_color = f"#{node_color_1}"
 
         # If True, neighbors without a corresponding node will be highlighted.
-        plot_no_node = self.pluginPrefs.get('plotNoNode', False)
-        no_node_color = (self.pluginPrefs.get('plotNoNodeColor', '00 33 FF').replace(' ', '').replace('#', ''))
+        plot_no_node       = self.pluginPrefs.get('plotNoNode', False)
+        no_node_color      = (self.pluginPrefs.get('plotNoNodeColor', '00 33 FF').replace(' ', '').replace('#', ''))
         plot_no_node_color = f"#{no_node_color}"
 
         # If True, each node will be plotted as its own neighbor.
-        plot_self = self.pluginPrefs.get('plotOwnNodes', False)
-        own_node_color = (self.pluginPrefs.get('plotOwnNodesColor', '33 33 33').replace(' ', '').replace('#', ''))
+        plot_self       = self.pluginPrefs.get('plotOwnNodes', False)
+        own_node_color  = (self.pluginPrefs.get('plotOwnNodesColor', '33 33 33').replace(' ', '').replace('#', ''))
         plot_self_color = f"#{own_node_color}"
 
         # If True, unused node addresses will be plotted.
@@ -334,8 +328,9 @@ class Plugin(indigo.PluginBase):
             counter += 1
 
         # Dummy dict of devices for testing.  FIXME - comment out before release
-        from dummy_dict import test_file as device_dict  # pylint: disable=unused-wildcard-import
-        dev_keys = list(device_dict.keys())
+        # from dummy_dict import test_file as device_dict  # pylint: disable=unused-wildcard-import
+
+        dev_keys = [k for k in device_dict]
 
         # If the dev_keys dict has zero len, there are no Z-Wave devices to plot.
         if len(dev_keys) < 1:
@@ -350,7 +345,7 @@ class Plugin(indigo.PluginBase):
                 device_dict[node]['no_node_1'] = True
 
             # Device is lost
-            device_delta = (datetime.datetime.now() - device_dict[node]['changed'])
+            device_delta = datetime.datetime.now() - device_dict[node]['changed']
             if device_delta > datetime.timedelta(days=update_delta):
                 self.logger.warning(f"Lost Device - {node} [Node {device_dict[node]['name']}] {device_delta}")
                 device_dict[node]['lost'] = True

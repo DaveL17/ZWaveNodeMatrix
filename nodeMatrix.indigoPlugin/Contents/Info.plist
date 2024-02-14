@@ -6,8 +6,6 @@
 	<string>2023.1.0</string>
 	<key>ServerApiVersion</key>
 	<string>3.2</string>
-	<key>IwsApiVersion</key>
-	<string>1.0.0</string>
 	<key>LoadPriority</key>
 	<integer>105</integer>
 	<key>CFBundleDisplayName</key>

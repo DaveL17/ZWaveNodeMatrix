@@ -1,7 +1,10 @@
 ### v2023.1.0
+- Adds `X (filled)` to Node Marker styles.
+- Adds "About Matplotlib" to plugin menu.
 - Fixes bug where charts wouldn't generate in Matplotlib 3.8 (shipping with Indigo 2023.2). Should still work for prior
   versions of Matplotlib.
 - Code refinements.
+- Moves Node Markers XML to template file.
 
 ### v2022.0.5
 - Updates plugin API to `3.2`.

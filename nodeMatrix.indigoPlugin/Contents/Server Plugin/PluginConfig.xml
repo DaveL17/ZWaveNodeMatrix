@@ -86,31 +86,8 @@
         <Label>Background Color:</Label>
     </Field>
 
-    <Field id="nodeMarker" type="menu" defaultValue="." tooltip="Select the marker style (note that some marker styles do not support all configuration options.)">
-        <Label>Node Marker:</Label>
-        <List>
-            <Option value="o">Circle</Option>
-            <Option value="D">Diamond</Option>
-            <Option value="d">Diamond (Thin)</Option>
-            <Option value="h">Hexagon 1</Option>
-            <Option value="H">Hexagon 2</Option>
-            <Option value="_">Horizontal Line</Option>
-            <Option value="8">Octagon</Option>
-            <Option value="p">Pentagon</Option>
-            <Option value=",">Pixel</Option>
-            <Option value="+">Plus</Option>
-            <Option value="P">Plus (filled)</Option>
-            <Option value=".">Point*</Option>
-            <Option value="*">Star</Option>
-            <Option value="s">Square</Option>
-            <Option value="1">Tri Down</Option>
-            <Option value="3">Tri Left</Option>
-            <Option value="4">Tri Right</Option>
-            <Option value="2">Tri Up</Option>
-            <Option value="|">Vertical Line</Option>
-            <Option value="x">X</Option>
-        </List>
-    </Field>
+    <!-- Node Markers Template -->
+    <Template file="Templates/node_markers.xml" />
 
     <Field id="nodeColor" type="colorpicker" defaultValue="FF FF FF" tooltip="Enter the color for each neighbor plot.">
         <Label>Node Color:</Label>
@@ -162,7 +139,7 @@
     </Field>
 
     <Field id="highlightLabel" type="label" alignText="right">
-        <Label>Highlighted these items:</Label>
+        <Label>Highlight these items:</Label>
     </Field>
 
     <Field id="separator03" type="separator"/>
