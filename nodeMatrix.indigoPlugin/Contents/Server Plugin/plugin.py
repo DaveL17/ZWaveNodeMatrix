@@ -40,7 +40,7 @@ __copyright__ = Dave.__copyright__
 __license__   = Dave.__license__
 __build__     = Dave.__build__
 __title__     = 'Z-Wave Node Matrix Plugin'
-__version__   = '2023.1.0'
+__version__   = '2023.1.1'
 
 
 # =============================================================================
@@ -257,10 +257,8 @@ class Plugin(indigo.PluginBase):
             'edgecolor': background_color,
             'facecolor': background_color,
             'format': None,
-            # 'frameon': None,
             'orientation': None,
             'pad_inches': 0.1,
-            # 'papertype': None,
             'transparent': True
         }
         kwarg_title = {

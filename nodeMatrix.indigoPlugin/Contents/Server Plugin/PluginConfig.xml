@@ -63,7 +63,7 @@
     <!-- Chart Sizing -->
     <Field id="chartManualSize" type="checkbox" defaultValue="false" tooltip="Enable to manually adjust the size of the matrix.">
         <Label>Override Image Size</Label>
-        <Description/>
+        <Description>(640 x 480 default)</Description>
     </Field>
 
     <Field id="chartHeight" type="textfield" defaultValue="7" visibleBindingId="chartManualSize" visibleBindingValue="true"
