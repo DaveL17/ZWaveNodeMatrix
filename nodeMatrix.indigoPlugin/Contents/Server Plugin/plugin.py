@@ -40,7 +40,7 @@ __copyright__ = Dave.__copyright__
 __license__   = Dave.__license__
 __build__     = Dave.__build__
 __title__     = 'Z-Wave Node Matrix Plugin'
-__version__   = '2023.1.1'
+__version__   = '2024.1.0'
 
 
 # =============================================================================
@@ -101,7 +101,7 @@ class Plugin(indigo.PluginBase):
     # =============================================================================
     # ============================== Indigo Methods ===============================
     # =============================================================================
-    def closedPrefsConfigUi(self, values_dict:indigo.Dict=None, user_cancelled:bool=None):  # noqa
+    def closedPrefsConfigUi(self, values_dict: indigo.Dict = None, user_cancelled: bool = None) -> dict:  # noqa
         """
         Standard Indigo method called when plugin preferences dialog is closed.
 
@@ -127,7 +127,7 @@ class Plugin(indigo.PluginBase):
 
     # =============================================================================
     @staticmethod
-    def sendDevicePing(dev_id:int=0, suppress_logging:bool=False):  # noqa
+    def sendDevicePing(dev_id: int = 0, suppress_logging: bool = False) -> dict:  # noqa
         """
         Title Placeholder
 
@@ -167,7 +167,7 @@ class Plugin(indigo.PluginBase):
     # ============================== Plugin Methods ===============================
     # =============================================================================
     @staticmethod
-    def get_font_list(fltr:str="", values_dict:indigo.Dict=None, type_id:int=0, target_id:int=0):  # noqa
+    def get_font_list(fltr: str = "", values_dict: indigo.Dict = None, type_id: int = 0, target_id: int = 0) -> list:  # noqa
         """
         Returns a list of available TrueType fonts
 
@@ -328,7 +328,8 @@ class Plugin(indigo.PluginBase):
         # Dummy dict of devices for testing.  FIXME - comment out before release
         # from dummy_dict import test_file as device_dict  # pylint: disable=unused-wildcard-import
 
-        dev_keys = [k for k in device_dict]
+        # dev_keys = [k for k in device_dict]
+        dev_keys = list(device_dict)
 
         # If the dev_keys dict has zero len, there are no Z-Wave devices to plot.
         if len(dev_keys) < 1:
@@ -577,7 +578,7 @@ class Plugin(indigo.PluginBase):
         self.logger.info("Z-Wave Node Matrix generated.")
 
     # =============================================================================
-    def make_the_matrix_action(self, values_dict:indigo.Dict):  # noqa
+    def make_the_matrix_action(self, values_dict: indigo.Dict):  # noqa
         """
         Respond to menu call to generate a new image
 
@@ -588,3 +589,19 @@ class Plugin(indigo.PluginBase):
         :return:
         """
         self.make_the_matrix()
+
+    def my_tests(self, action: indigo.PluginAction = None) -> None:
+        """
+        The main unit test method
+
+        The my_tests method is called from a plugin action item and, when called, imports all unit tests and runs them.
+        If the unit test module returns True, then all tests have passed.
+        """
+        from Tests import test_plugin  # test_devices
+        tests = test_plugin.TestPlugin()
+        if tests.test_make_the_matrix(self):
+            self.logger.warning("Make matrix tests passed.")
+        if tests.test_plugin_action(self):
+            self.logger.warning("Plugin action tests passed.")
+        if tests.test_get_font_list(self):
+            self.logger.warning("Get font list tests passed.")

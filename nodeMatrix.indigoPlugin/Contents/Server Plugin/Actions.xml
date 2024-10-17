@@ -4,4 +4,8 @@
         <Name>Refresh Matrix</Name>
         <CallbackMethod>make_the_matrix_action</CallbackMethod>
     </Action>
+	<Action id="my_tests" uiPath="hidden">
+		<Name>Run All Tests</Name>
+		<CallbackMethod>my_tests</CallbackMethod>
+	</Action>
 </Actions>
