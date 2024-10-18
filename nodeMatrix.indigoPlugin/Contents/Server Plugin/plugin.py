@@ -75,10 +75,10 @@ class Plugin(indigo.PluginBase):
         self.Fogbert.audit_server_version(min_ver=2022)
 
         # ============================= Remote Debugging ==============================
-        try:
-            pydevd.settrace('localhost', port=5678, stdoutToServer=True, stderrToServer=True, suspend=False)
-        except:
-            pass
+        # try:
+        #     pydevd.settrace('localhost', port=5678, stdoutToServer=True, stderrToServer=True, suspend=False)
+        # except:
+        #     pass
 
     # =============================================================================
     def log_plugin_environment(self):
@@ -297,7 +297,7 @@ class Plugin(indigo.PluginBase):
             # empty)
             elif dev_address in device_dict and neighbors:
                 device_dict[dev_address]['battery'] = (
-                    dev.owmerProps.get('SupportsBatteryLevel', False)
+                    dev.ownerProps.get('SupportsBatteryLevel', False)
                 )
                 device_dict[dev_address]['changed']   = dev.lastChanged
                 device_dict[dev_address]['invalid_neighbor'] = False
@@ -317,8 +317,8 @@ class Plugin(indigo.PluginBase):
             counter += 1
 
         # Dummy dict of devices for testing.  FIXME - comment out before release
-        from dummy_dict import test_file as device_dict  # pylint: disable=unused-wildcard-import
-        self.logger.warning("Using dummy dict!!!")
+        # from dummy_dict import test_file as device_dict  # pylint: disable=unused-wildcard-import
+        # self.logger.warning("Using dummy dict!!!")
 
         # dev_keys = [k for k in device_dict]
         dev_keys = list(device_dict)
