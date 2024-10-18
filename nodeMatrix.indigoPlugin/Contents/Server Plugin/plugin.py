@@ -21,11 +21,11 @@ import numpy as np  # noqa - included in Indigo Python 3 install
 import matplotlib  # noqa - included in Indigo Python 3 install
 # Note: this statement must be run before any other matplotlib imports are done.
 matplotlib.use('AGG')
-import matplotlib.font_manager as fnt
-import matplotlib.pyplot as plt
+import matplotlib.font_manager as fnt  # noqa
+import matplotlib.pyplot as plt  # noqa
 try:
     import indigo  # noqa
-    # import pydevd
+    import pydevd
 except ImportError:
     pass
 
@@ -62,25 +62,25 @@ class Plugin(indigo.PluginBase):
         super().__init__(plugin_id, plugin_display_name, plugin_version, plugin_prefs)
 
         # ============================= Instance Variables =============================
-        self.plugin_is_initializing  = True
-        self.plugin_is_shutting_down = False
         matplotlib.use('AGG')
 
-        self.debug_level = int(self.pluginPrefs.get('showDebugLevel', '30'))
         self.plugin_file_handler.setFormatter(logging.Formatter(Dave.LOG_FORMAT, datefmt='%Y-%m-%d %H:%M:%S'))
+        self.debug_level = int(self.pluginPrefs.get('showDebugLevel', '30'))
         self.indigo_log_handler.setLevel(self.debug_level)
 
         # ========================== Initialize DLFramework ===========================
         self.Fogbert = Dave.Fogbert(self)
 
+        # =========================== Audit Server Version ============================
+        self.Fogbert.audit_server_version(min_ver=2022)
+
         # ============================= Remote Debugging ==============================
-        # try:
-        #     pydevd.settrace( 'localhost', port=5678, stdoutToServer=True, stderrToServer=True, suspend=False)
-        # except:
-        #     pass
+        try:
+            pydevd.settrace('localhost', port=5678, stdoutToServer=True, stderrToServer=True, suspend=False)
+        except:
+            pass
 
-        self.plugin_is_initializing = False
-
+    # =============================================================================
     def log_plugin_environment(self):
         """
         Log pluginEnvironment information when plugin is first started
@@ -88,18 +88,44 @@ class Plugin(indigo.PluginBase):
         self.Fogbert.pluginEnvironment()
 
     # =============================================================================
-    def __del__(self):
+    # ============================== Indigo Methods ===============================
+    # =============================================================================
+    def validate_prefs_config_ui(self, values_dict):
         """
-        Title Placeholder
+        Standard Indigo method called when plugin preferences dialog is closed.
 
-        Body placeholder
-
+        :param indigo.Dict values_dict:
         :return:
         """
-        indigo.PluginBase.__del__(self)
+        error_msg_dict = indigo.Dict()
 
-    # =============================================================================
-    # ============================== Indigo Methods ===============================
+        try:
+            try:
+                # `xAxisRotate` must be between -360 and 360. In essence, -360, 0, and 360 are all the same rotation.
+                if not -360 <= int(values_dict.get('xAxisRotate', 0)) <= 360:
+                    error_msg_dict['xAxisRotate'] = "The X Label Rotate value must be between -360 and 360 inclusive."
+                    return False, values_dict, error_msg_dict
+            except ValueError:
+                error_msg_dict['xAxisRotate'] = "The X Label Rotate value must be a number."
+                return False, values_dict, error_msg_dict
+
+            # Preferences whose value must be a number greater than zero.
+            for pref in [('chartTitleFont', 'Title Font Size'),
+                         ('tickLabelFont', 'Label Font Size'),
+                         ('chartResolution', 'Image DPI'),
+                         ('chartHeight', 'Image Height'),
+                         ('chartWidth', 'Image Width'),
+                         ('plotLostDevicesTimeDelta', 'Days')
+                         ]:
+                if not int(values_dict.get(pref[0], 0)) > 0:
+                    error_msg_dict[pref[0]] = f"The {pref[1]} value must be a number greater than zero."
+                    return False, values_dict, error_msg_dict
+
+            return True, values_dict
+
+        except Exception as error:
+            self.logger.critical(f"{error}")
+
     # =============================================================================
     def closedPrefsConfigUi(self, values_dict: indigo.Dict = None, user_cancelled: bool = None) -> dict:  # noqa
         """
@@ -124,44 +150,6 @@ class Plugin(indigo.PluginBase):
             self.logger.debug("Plugin prefs cancelled.")
 
         return values_dict
-
-    # =============================================================================
-    @staticmethod
-    def sendDevicePing(dev_id: int = 0, suppress_logging: bool = False) -> dict:  # noqa
-        """
-        Title Placeholder
-
-        Body placeholder
-
-        :param int dev_id:
-        :param bool suppress_logging:
-        :return:
-        """
-        indigo.server.log("ZWaveNodeMatrix Plugin devices do not support the ping function.")
-        return {'result': 'Failure'}
-
-    # =============================================================================
-    def startup(self):
-        """
-        Title Placeholder
-
-        Body placeholder
-
-        :return:
-        """
-        # =========================== Audit Server Version ============================
-        self.Fogbert.audit_server_version(min_ver=2022)
-
-    # =============================================================================
-    def stopConcurrentThread(self):  # noqa
-        """
-        Title Placeholder
-
-        Body placeholder
-
-        :return:
-        """
-        self.plugin_is_shutting_down = True
 
     # =============================================================================
     # ============================== Plugin Methods ===============================
@@ -280,10 +268,9 @@ class Plugin(indigo.PluginBase):
 
         # Iterate through all the Z-Wave devices and build a master dictionary.
         for dev in indigo.devices.iter('indigo.zwave'):
-
             dev_address = int(dev.address)
             neighbors   = (
-                list(dev.globalProps['com.perceptiveautomation.indigoplugin.zwave'].get('zwNodeNeighbors', []))
+                list(dev.ownerProps.get('zwNodeNeighbors', []))
             )
 
             # New device address
@@ -291,7 +278,7 @@ class Plugin(indigo.PluginBase):
                 device_dict[dev_address] = {}
 
                 device_dict[dev_address]['battery'] = (
-                    dev.globalProps['com.perceptiveautomation.indigoplugin.zwave'].get('SupportsBatteryLevel', False)
+                    dev.ownerProps.get('SupportsBatteryLevel', False)
                 )
                 device_dict[dev_address]['changed']          = dev.lastChanged
                 device_dict[dev_address]['invalid_neighbor'] = False
@@ -306,7 +293,7 @@ class Plugin(indigo.PluginBase):
             # empty)
             elif dev_address in device_dict and neighbors:
                 device_dict[dev_address]['battery'] = (
-                    dev.globalProps['com.perceptiveautomation.indigoplugin.zwave'].get('SupportsBatteryLevel', False)
+                    dev.owmerProps.get('SupportsBatteryLevel', False)
                 )
                 device_dict[dev_address]['changed']   = dev.lastChanged
                 device_dict[dev_address]['invalid_neighbor'] = False
@@ -326,7 +313,8 @@ class Plugin(indigo.PluginBase):
             counter += 1
 
         # Dummy dict of devices for testing.  FIXME - comment out before release
-        # from dummy_dict import test_file as device_dict  # pylint: disable=unused-wildcard-import
+        from dummy_dict import test_file as device_dict  # pylint: disable=unused-wildcard-import
+        self.logger.warning("Using dummy dict!!!")
 
         # dev_keys = [k for k in device_dict]
         dev_keys = list(device_dict)
