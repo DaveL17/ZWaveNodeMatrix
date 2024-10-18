@@ -92,7 +92,7 @@ class Plugin(indigo.PluginBase):
     # =============================================================================
     def validate_prefs_config_ui(self, values_dict):
         """
-        Standard Indigo method called when plugin preferences dialog is closed.
+        Standard Indigo validation method called when plugin preferences dialog is closed.
 
         :param indigo.Dict values_dict:
         :return:
@@ -117,8 +117,12 @@ class Plugin(indigo.PluginBase):
                          ('chartWidth', 'Image Width'),
                          ('plotLostDevicesTimeDelta', 'Days')
                          ]:
-                if not int(values_dict.get(pref[0], 0)) > 0:
-                    error_msg_dict[pref[0]] = f"The {pref[1]} value must be a number greater than zero."
+                try:
+                    if not int(values_dict.get(pref[0], 0)) > 0:
+                        error_msg_dict[pref[0]] = f"The {pref[1]} value must be a number greater than zero."
+                        return False, values_dict, error_msg_dict
+                except ValueError:
+                    error_msg_dict[pref[0]] = f"The {pref[1]} value must be a number."
                     return False, values_dict, error_msg_dict
 
             return True, values_dict
@@ -587,9 +591,25 @@ class Plugin(indigo.PluginBase):
         """
         from Tests import test_plugin  # test_devices
         tests = test_plugin.TestPlugin()
-        if tests.test_make_the_matrix(self):
-            self.logger.warning("Make matrix tests passed.")
-        if tests.test_plugin_action(self):
-            self.logger.warning("Plugin action tests passed.")
-        if tests.test_get_font_list(self):
-            self.logger.warning("Get font list tests passed.")
+
+        def process_test_result(result, name):
+            if result[0] is True:
+                self.logger.warning(f"{name} tests passed.")
+            else:
+                self.logger.warning(f"{result[1]}")
+
+        # ===================================== Make Matrix =====================================
+        test = tests.test_make_the_matrix(self)
+        process_test_result(test, "Make Matrix")
+
+        # ===================================== Execute Action =====================================
+        test = tests.test_plugin_action(self)
+        process_test_result(test, "Execute Action")
+
+        # ===================================== Font List =====================================
+        test = tests.test_get_font_list(self)
+        process_test_result(test, "Font List")
+
+        # ===================================== Prefs Validation =====================================
+        test = tests.test_plugin_prefs_validation(self)
+        process_test_result(test, "Prefs Validation")
