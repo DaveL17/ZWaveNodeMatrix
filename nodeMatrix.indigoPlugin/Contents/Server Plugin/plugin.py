@@ -25,7 +25,6 @@ import matplotlib.font_manager as fnt  # noqa
 import matplotlib.pyplot as plt  # noqa
 try:
     import indigo  # noqa
-    import pydevd
 except ImportError:
     pass
 
@@ -73,12 +72,6 @@ class Plugin(indigo.PluginBase):
 
         # =========================== Audit Server Version ============================
         self.Fogbert.audit_server_version(min_ver=2022)
-
-        # ============================= Remote Debugging ==============================
-        # try:
-        #     pydevd.settrace('localhost', port=5678, stdoutToServer=True, stderrToServer=True, suspend=False)
-        # except:
-        #     pass
 
     # =============================================================================
     def log_plugin_environment(self):
