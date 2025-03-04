@@ -24,7 +24,7 @@ __build__ = "Unused"
 __copyright__ = "Copyright 2024 DaveL17"
 __license__ = "MIT"
 __title__ = "DLFramework"
-__version__ = "0.1.07"
+__version__ = "0.1.08"
 
 # supported operators for eval expressions
 OPERATORS = {
