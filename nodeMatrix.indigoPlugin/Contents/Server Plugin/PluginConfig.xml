@@ -171,16 +171,16 @@
         <Label>Days:</Label>
     </Field>
 
-    <!-- Plot No Node 1 -->
-    <Field id="plotNoNode1" type="checkbox" defaultValue="false" tooltip="Enable to highlight nodes that don't have node 1 in their neighbor list.">
-        <Label>Missing Neighbor 1</Label>
-        <Description>(colors X axis labels.)</Description>
-    </Field>
+<!--    &lt;!&ndash; Plot No Node 1 &ndash;&gt;-->
+<!--    <Field id="plotNoNode1" type="checkbox" defaultValue="false" tooltip="Enable to highlight nodes that don't have node 1 in their neighbor list.">-->
+<!--        <Label>Missing Neighbor 1</Label>-->
+<!--        <Description>(colors X axis labels.)</Description>-->
+<!--    </Field>-->
 
-    <Field id="plotNoNode1Color" type="colorpicker" defaultValue="FF 00 00" visibleBindingId="plotNoNode1" visibleBindingValue="true"
-           tooltip="Enter the color to highlight nodes that don't have node 1 in their neighbor list.">
-        <Label>Label Color:</Label>
-    </Field>
+<!--    <Field id="plotNoNode1Color" type="colorpicker" defaultValue="FF 00 00" visibleBindingId="plotNoNode1" visibleBindingValue="true"-->
+<!--           tooltip="Enter the color to highlight nodes that don't have node 1 in their neighbor list.">-->
+<!--        <Label>Label Color:</Label>-->
+<!--    </Field>-->
 
     <!-- Neighbors Missing Nodes -->
     <Field id="plotNoNode" type="checkbox" defaultValue="false" tooltip="Enable to highlight neighbors that don't have a corresponding node.">

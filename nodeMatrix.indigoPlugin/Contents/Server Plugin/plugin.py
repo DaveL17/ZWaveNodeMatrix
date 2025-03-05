@@ -204,11 +204,6 @@ class Plugin(indigo.PluginBase):
         battery_color      = (self.pluginPrefs.get('plotBatteryColor', 'FF 00 00').replace(' ', '').replace('#', ''))
         plot_battery_color = f"#{battery_color}"
 
-        # If True, devices with node 1 missing will be highlighted.
-        plot_no_node_1       = self.pluginPrefs.get('plotNoNode1', False)
-        node_color_1         = (self.pluginPrefs.get('plotNoNode1Color', 'FF 00 00').replace(' ', '').replace('#', ''))
-        plot_no_node_1_color = f"#{node_color_1}"
-
         # If True, neighbors without a corresponding node will be highlighted.
         plot_no_node       = self.pluginPrefs.get('plotNoNode', False)
         no_node_color      = (self.pluginPrefs.get('plotNoNodeColor', '00 33 FF').replace(' ', '').replace('#', ''))
@@ -309,11 +304,12 @@ class Plugin(indigo.PluginBase):
             device_dict[key]['counter'] = counter
             counter += 1
 
-        # Dummy dict of devices for testing.  FIXME - comment out before release
-        # from dummy_dict import test_file as device_dict  # pylint: disable=unused-wildcard-import
-        # self.logger.warning("Using dummy dict!!!")
+        # Dummy dict of devices for testing.
+        # Note!!! the dummy dict won't work with the Print Neighbor List menu item because it queries the server and
+        # not the dummy dict. Comment out before release.
+        # from dummy_dict import test_file as device_dict  # pylint: disable=unused-wildcard-import  # TODO: comment this
+        # self.logger.warning("Using dummy dict!!!")  # TODO: comment this
 
-        # dev_keys = [k for k in device_dict]
         dev_keys = list(device_dict)
 
         # If the dev_keys dict has zero len, there are no Z-Wave devices to plot.
@@ -504,35 +500,12 @@ class Plugin(indigo.PluginBase):
                           )
                 )
 
-            if plot_no_node_1:
-                legend_labels.append("no node 1")
-                legend_styles.append(
-                    tuple(plt.plot([], color=plot_no_node_1_color, linestyle='', marker='x',
-                                   markerfacecolor=plot_no_node_1_color)
-                          )
-                )
-
             legend = plt.legend(
                 legend_styles, legend_labels, bbox_to_anchor=(1, 0.5), fancybox=True, loc='best',
                 ncol=1, numpoints=1, prop={'family': font_name, 'size': 6.5}
             )
             legend.get_frame().set_alpha(0)
             _ = [text.set_color(font_color) for text in legend.get_texts()]
-
-        # =================== Color labels for nodes with no node 1 ===================
-        # Affects labels on the X axis.
-        if plot_no_node_1:
-            x_tick_labels = list(plt.gca().get_xticklabels())
-
-            if plot_unused_nodes:
-                for node in dev_keys:
-                    if device_dict[node]['no_node_1']:
-                        x_tick_labels[node - 1].set_color(plot_no_node_1_color)
-
-            else:
-                for node in dev_keys:
-                    if device_dict[node]['no_node_1']:
-                        x_tick_labels[dev_keys.index(node)].set_color(plot_no_node_1_color)  # noqa
 
         # ================== Color labels for neighbors with no node ==================
         # Affects labels on the Y axis.
@@ -574,6 +547,32 @@ class Plugin(indigo.PluginBase):
         :return:
         """
         self.make_the_matrix()
+
+
+    # =============================================================================
+    def print_neighbor_list(self):
+        """
+        Send a list of nodes/neighbors to the Indigo Events Log
+
+        This method iterates all Z-Wave devices and logs their neighbor list.
+        :return:
+        """
+        try:
+            nodes_list = []
+
+            # Iterate all Z-Wave Devices
+            for dev in indigo.devices.iter(filter="indigo.zwave"):
+                nodes = dev.ownerProps.get('zwNodeNeighborsStr', None)
+                if nodes:
+                    nodes_list.append(f"Node: {dev.address:<5}{nodes}")
+
+            # Send the sorted list to the log
+            indigo.server.log(f"========== Z-Wave Neighbors List ==========")
+            sorted_nodes = sorted(nodes_list, key=lambda x: int(x.split()[1]))
+            for node in sorted_nodes:
+                indigo.server.log(f"{node}")  # Print the list regardless of debug logging setting
+        except Exception as err:
+            self.logger.warning(f"{err}")
 
     def my_tests(self, action: indigo.PluginAction = None) -> None:
         """

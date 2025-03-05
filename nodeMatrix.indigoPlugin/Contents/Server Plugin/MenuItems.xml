@@ -19,6 +19,11 @@
         <CallbackMethod>log_plugin_environment</CallbackMethod>
     </MenuItem>
 
+    <MenuItem id="print_neighbor_list" uiPath="plugin_tools">
+        <Name>Print Neighbor List</Name>
+        <CallbackMethod>print_neighbor_list</CallbackMethod>
+    </MenuItem>
+
     <MenuItem id="killAllComms">
         <Name>Refresh Matrix</Name>
         <CallbackMethod>make_the_matrix</CallbackMethod>
