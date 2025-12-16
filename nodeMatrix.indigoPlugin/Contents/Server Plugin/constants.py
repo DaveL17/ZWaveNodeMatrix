@@ -1,8 +1,8 @@
 """
 Repository of application constants
 
-The constants.py file contains all application constants and is imported as a library. References
-are denoted as constants by the use of all caps.
+The constants.py file contains all application constants and is imported as a library. References are denoted as
+constants by the use of all caps.
 """
 import indigo  # noqa
 

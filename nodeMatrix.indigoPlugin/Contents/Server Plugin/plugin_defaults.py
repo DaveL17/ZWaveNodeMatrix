@@ -1,10 +1,10 @@
-from constants import *
-
 """
 Note that all text field values should be instantiated as strings. If not, the server will coerce the plugin pref to be
 of the appropriate type which causes unusual things to happen. For example, if the field pref is set to `integer`, if
 you enter a string in the dialog, Indigo will convert it to an integer anyway (i.e., "A" becomes 0).
 """
+
+from constants import INSTALL_PATH
 
 kDefaultPluginPrefs = {
     'backgroundColor': "00 00 00",

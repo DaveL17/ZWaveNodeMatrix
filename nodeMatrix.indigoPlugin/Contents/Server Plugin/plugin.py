@@ -39,7 +39,7 @@ __copyright__ = Dave.__copyright__
 __license__   = Dave.__license__
 __build__     = Dave.__build__
 __title__     = 'Z-Wave Node Matrix Plugin'
-__version__   = '2024.1.0'
+__version__   = '2025.1.0'
 
 
 # =============================================================================
@@ -111,7 +111,7 @@ class Plugin(indigo.PluginBase):
                          ('plotLostDevicesTimeDelta', 'Days')
                          ]:
                 try:
-                    if not int(values_dict.get(pref[0], 0)) > 0:
+                    if int(values_dict.get(pref[0], 0)) <= 0:
                         error_msg_dict[pref[0]] = f"The {pref[1]} value must be a number greater than zero."
                         return False, values_dict, error_msg_dict
                 except ValueError:
@@ -121,7 +121,8 @@ class Plugin(indigo.PluginBase):
             return True, values_dict
 
         except Exception as error:
-            self.logger.critical(f"{error}")
+            self.logger.critical("%s" % error)
+            return False, values_dict
 
     # =============================================================================
     def closedPrefsConfigUi(self, values_dict: indigo.Dict = None, user_cancelled: bool = None) -> dict:  # noqa
@@ -327,7 +328,7 @@ class Plugin(indigo.PluginBase):
             # Device is lost
             device_delta = datetime.datetime.now() - device_dict[node]['changed']
             if device_delta > datetime.timedelta(days=update_delta):
-                self.logger.warning(f"Lost Device - {node} [Node {device_dict[node]['name']}] {device_delta}")
+                self.logger.warning("Lost Device - %s [Node %s] %s" % (node, device_dict[node]['name'], device_delta))
                 device_dict[node]['lost'] = True
 
             # Lists neighbor that is not an active address
@@ -345,7 +346,7 @@ class Plugin(indigo.PluginBase):
             neighbor_list = sorted(neighbor_list)
 
         dummy_y = {node: counter for counter, node in enumerate(neighbor_list, 1)}
-        self.logger.debug(f"Device Dict: {device_dict}")
+        self.logger.debug("Device Dict: %s" % device_dict)
 
         # ============================= Lay Out The Plots =============================
         for node in dev_keys:
@@ -548,7 +549,6 @@ class Plugin(indigo.PluginBase):
         """
         self.make_the_matrix()
 
-
     # =============================================================================
     def print_neighbor_list(self):
         """
@@ -567,12 +567,12 @@ class Plugin(indigo.PluginBase):
                     nodes_list.append(f"Node: {dev.address:<5}{nodes}")
 
             # Send the sorted list to the log
-            indigo.server.log(f"========== Z-Wave Neighbors List ==========")
+            indigo.server.log("========== Z-Wave Neighbors List ==========")
             sorted_nodes = sorted(nodes_list, key=lambda x: int(x.split()[1]))
             for node in sorted_nodes:
                 indigo.server.log(f"{node}")  # Print the list regardless of debug logging setting
         except Exception as err:
-            self.logger.warning(f"{err}")
+            self.logger.warning("%s" % err)
 
     def my_tests(self, action: indigo.PluginAction = None) -> None:
         """
@@ -586,9 +586,9 @@ class Plugin(indigo.PluginBase):
 
         def process_test_result(result, name):
             if result[0] is True:
-                self.logger.warning(f"{name} tests passed.")
+                self.logger.warning("%s tests passed." % name)
             else:
-                self.logger.warning(f"{result[1]}")
+                self.logger.warning("%s" % result[1])
 
         # ===================================== Make Matrix =====================================
         test = tests.test_make_the_matrix(self)

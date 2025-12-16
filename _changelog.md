@@ -1,5 +1,5 @@
-### v2024.1.0
-- 
+### v2025.1.0
+- Performance and stability improvements.
  
 ### v2023.1.0
 - Minor UI enhancements.

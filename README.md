@@ -5,4 +5,4 @@ The ZWave Node Matrix plugin creates a visual representation of an Indigo Z-Wave
 neighbor list onto a scatter plot.
 
 > [!NOTE]
-> The ZWave Node Matrix plugin does not require access to the Internet to function.
+> The Z-Wave Node Matrix plugin does not require access to the Internet to function.
