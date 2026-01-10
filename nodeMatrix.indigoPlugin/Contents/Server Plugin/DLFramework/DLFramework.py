@@ -21,10 +21,10 @@ except ImportError:
 # =================================== HEADER ==================================
 __author__ = "DaveL17"
 __build__ = "Unused"
-__copyright__ = "Copyright 2025 DaveL17"
+__copyright__ = "Copyright 2026 DaveL17"
 __license__ = "MIT"
 __title__ = "DLFramework"
-__version__ = "0.1.09"
+__version__ = "0.1.10"
 
 # supported operators for eval expressions
 OPERATORS = {
