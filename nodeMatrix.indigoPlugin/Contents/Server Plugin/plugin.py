@@ -39,29 +39,25 @@ __copyright__ = Dave.__copyright__
 __license__   = Dave.__license__
 __build__     = Dave.__build__
 __title__     = 'Z-Wave Node Matrix Plugin'
-__version__   = '2025.1.0'
+__version__   = '2025.2.0'
 
 
 # =============================================================================
 class Plugin(indigo.PluginBase):
-    """
-    Standard Indigo Plugin Class
-
-    :param indigo.PluginBase:
-    """
+    """Standard Indigo Plugin Class for the Z-Wave Node Matrix plugin."""
     def __init__(self, plugin_id, plugin_display_name, plugin_version, plugin_prefs):
-        """
-        Plugin initialization
+        """Initialize the plugin.
 
-        :param str plugin_id:
-        :param str plugin_display_name:
-        :param str plugin_version:
-        :param indigo.Dict plugin_prefs:
+        Args:
+            plugin_id (str): The plugin's unique identifier.
+            plugin_display_name (str): The plugin's display name.
+            plugin_version (str): The plugin's version string.
+            plugin_prefs (indigo.Dict): The plugin's stored preferences.
         """
         super().__init__(plugin_id, plugin_display_name, plugin_version, plugin_prefs)
 
         # ============================= Instance Variables =============================
-        matplotlib.use('AGG')
+        matplotlib.use('AGG')  # Re-apply non-interactive backend in case of re-import
 
         self.plugin_file_handler.setFormatter(logging.Formatter(Dave.LOG_FORMAT, datefmt='%Y-%m-%d %H:%M:%S'))
         self.debug_level = int(self.pluginPrefs.get('showDebugLevel', '30'))
@@ -75,20 +71,21 @@ class Plugin(indigo.PluginBase):
 
     # =============================================================================
     def log_plugin_environment(self):
-        """
-        Log pluginEnvironment information when plugin is first started
-        """
+        """Log plugin environment information when the plugin is first started."""
         self.Fogbert.pluginEnvironment()
 
     # =============================================================================
     # ============================== Indigo Methods ===============================
     # =============================================================================
     def validate_prefs_config_ui(self, values_dict):
-        """
-        Standard Indigo validation method called when plugin preferences dialog is closed.
+        """Validate plugin preferences when the preferences dialog is closed.
 
-        :param indigo.Dict values_dict:
-        :return:
+        Args:
+            values_dict (indigo.Dict): The preference values submitted from the dialog.
+
+        Returns:
+            tuple: (True, values_dict) on success, or (False, values_dict, error_msg_dict)
+                on validation failure.
         """
         error_msg_dict = indigo.Dict()
 
@@ -126,12 +123,14 @@ class Plugin(indigo.PluginBase):
 
     # =============================================================================
     def closedPrefsConfigUi(self, values_dict: indigo.Dict = None, user_cancelled: bool = None) -> dict:  # noqa
-        """
-        Standard Indigo method called when plugin preferences dialog is closed.
+        """Apply or discard plugin preferences when the dialog is closed.
 
-        :param indigo.Dict values_dict:
-        :param bool user_cancelled:
-        :return:
+        Args:
+            values_dict (indigo.Dict): The preference values submitted from the dialog.
+            user_cancelled (bool): True if the user cancelled the dialog without saving.
+
+        Returns:
+            indigo.Dict: The values_dict passed in.
         """
         if not user_cancelled:
             # Ensure that self.pluginPrefs includes any recent changes.
@@ -154,17 +153,19 @@ class Plugin(indigo.PluginBase):
     # =============================================================================
     @staticmethod
     def get_font_list(fltr: str = "", values_dict: indigo.Dict = None, type_id: int = 0, target_id: int = 0) -> list:  # noqa
-        """
-        Returns a list of available TrueType fonts
+        """Return a sorted list of TrueType font names visible to matplotlib.
 
-        Generates and returns a list of available fonts.  Note that these are the fonts that
-        matplotlib can see, not necessarily all the fonts installed on the system.
+        Note that these are the fonts matplotlib can discover, not necessarily all fonts
+        installed on the system.
 
-        :param str fltr:
-        :param indigo.Dict values_dict:
-        :param str type_id:
-        :param int target_id:
-        :return:
+        Args:
+            fltr (str): Unused filter string passed by Indigo.
+            values_dict (indigo.Dict): Unused values dict passed by Indigo.
+            type_id (int): Unused type identifier passed by Indigo.
+            target_id (int): Unused target identifier passed by Indigo.
+
+        Returns:
+            list[str]: Sorted list of font base names (without file extensions).
         """
         font_list = fnt.findSystemFonts(fontpaths=None, fontext='ttf')
         names     = [path.splitext(path.basename(font))[0] for font in font_list]
@@ -172,13 +173,14 @@ class Plugin(indigo.PluginBase):
 
     # =============================================================================
     def make_the_matrix(self):
-        """
-        Generate the Z-Wave node matrix image
+        """Generate and save the Z-Wave node matrix image.
 
-        General code to construct the Z-Wave node matrix image.
-
-        :return:
+        Iterates all Z-Wave devices, builds a neighbor relationship dictionary, and plots
+        each node's neighbors as a scatter matrix using matplotlib. The resulting image is
+        saved to the path specified in plugin preferences. Optional overlays include
+        battery devices, lost devices, self-neighbors, and neighbors with no active node.
         """
+        # Prefs store colors as space-separated hex strings (e.g. 'FF 00 00'); normalize to '#RRGGBB'.
         bk_color               = self.pluginPrefs.get('backgroundColor', '00 00 00')
         background_color       = f"#{bk_color.replace(' ', '').replace('#', '')}"
         chart_title            = self.pluginPrefs.get('chartTitle', 'Z-Wave Node Matrix')
@@ -266,7 +268,7 @@ class Plugin(indigo.PluginBase):
                 list(dev.ownerProps.get('zwNodeNeighbors', []))
             )
 
-            # New device address
+            # New device address — create entry and populate all fields.
             if dev_address not in device_dict:
                 device_dict[dev_address] = {}
 
@@ -282,8 +284,8 @@ class Plugin(indigo.PluginBase):
 
                 counter += 1
 
-            # Device address already in device_dict but device has neighbors (neighbor list not
-            # empty)
+            # Duplicate address (e.g. multi-endpoint device) with a non-empty neighbor list —
+            # overwrite with the most complete data.
             elif dev_address in device_dict and neighbors:
                 device_dict[dev_address]['battery'] = (
                     dev.ownerProps.get('SupportsBatteryLevel', False)
@@ -345,6 +347,8 @@ class Plugin(indigo.PluginBase):
             neighbor_list += [x for x in device_dict[node]['neighbors'] if x not in neighbor_list]
             neighbor_list = sorted(neighbor_list)
 
+        # Maps each node address (including pure neighbors) to a 1-based sequential Y-axis
+        # position, eliminating gaps when plot_unused_nodes is False.
         dummy_y = {node: counter for counter, node in enumerate(neighbor_list, 1)}
         self.logger.debug("Device Dict: %s" % device_dict)
 
@@ -367,6 +371,7 @@ class Plugin(indigo.PluginBase):
 
             # ============================ Plot Neighbors =============================
             for neighbor in device_dict[node]['neighbors']:
+                # zorder=9: base layer; battery/lost overlays draw on top at 10/11.
                 if plot_unused_nodes:
                     plt.plot(
                         node, neighbor, marker=node_marker, markeredgewidth=node_marker_edge_width,
@@ -380,6 +385,7 @@ class Plugin(indigo.PluginBase):
                     )
 
                 # =========================== Plot Battery Devices ============================
+                # Replot battery-powered nodes on top (zorder=10) with a different edge color.
                 if plot_battery:
                     if plot_unused_nodes and device_dict[node]['battery']:
                         plt.plot(
@@ -397,6 +403,7 @@ class Plugin(indigo.PluginBase):
                         )
 
                 # ============================= Plot Lost Devices =============================
+                # Replot lost devices on top (zorder=11) to ensure they're visible over other overlays.
                 if plot_lost_devices and device_dict[node]['lost']:
                     if plot_unused_nodes:
                         plt.plot(
@@ -505,8 +512,8 @@ class Plugin(indigo.PluginBase):
                 legend_styles, legend_labels, bbox_to_anchor=(1, 0.5), fancybox=True, loc='best',
                 ncol=1, numpoints=1, prop={'family': font_name, 'size': 6.5}
             )
-            legend.get_frame().set_alpha(0)
-            _ = [text.set_color(font_color) for text in legend.get_texts()]
+            legend.get_frame().set_alpha(0)  # Transparent legend background
+            _ = [text.set_color(font_color) for text in legend.get_texts()]  # Side-effect list comp; result discarded
 
         # ================== Color labels for neighbors with no node ==================
         # Affects labels on the Y axis.
@@ -515,13 +522,13 @@ class Plugin(indigo.PluginBase):
 
             for a in dummy_y:
                 if a not in dev_keys:
-                    if a != 1:
+                    if a != 1:  # Node 1 (controller) is skipped; it won't appear as a standalone device
                         if plot_unused_nodes:
-                            a -= 1
+                            a -= 1  # Node addresses are 1-based; convert to 0-based tick label index
                             y_tick_labels[a].set_color(plot_no_node_color)
 
                         else:
-                            a = dummy_y[a] - 1
+                            a = dummy_y[a] - 1  # dummy_y position is 1-based; convert to 0-based tick label index
                             y_tick_labels[a].set_color(plot_no_node_color)
 
         # ==================== Output the Z-Wave Node Matrix Image ====================
@@ -538,25 +545,19 @@ class Plugin(indigo.PluginBase):
 
     # =============================================================================
     def make_the_matrix_action(self, values_dict: indigo.Dict):  # noqa
-        """
-        Respond to menu call to generate a new image
+        """Indigo menu action handler that triggers a matrix image refresh.
 
-        When the user calls for an updated image to be generated via the Refresh Matrix menu item,
-        call self.make_the_matrix() method.
+        Called when the user selects the Refresh Matrix menu item. Delegates to
+        make_the_matrix().
 
-        :param indigo.Dict values_dict:
-        :return:
+        Args:
+            values_dict (indigo.Dict): Values dict passed by Indigo (unused).
         """
         self.make_the_matrix()
 
     # =============================================================================
     def print_neighbor_list(self):
-        """
-        Send a list of nodes/neighbors to the Indigo Events Log
-
-        This method iterates all Z-Wave devices and logs their neighbor list.
-        :return:
-        """
+        """Log a sorted list of Z-Wave node neighbor strings to the Indigo Events Log."""
         try:
             nodes_list = []
 
@@ -575,11 +576,13 @@ class Plugin(indigo.PluginBase):
             self.logger.warning("%s" % err)
 
     def my_tests(self, action: indigo.PluginAction = None) -> None:
-        """
-        The main unit test method
+        """Run all plugin unit tests and log results to the Indigo Events Log.
 
-        The my_tests method is called from a plugin action item and, when called, imports all unit tests and runs them.
-        If the unit test module returns True, then all tests have passed.
+        Called from an Indigo plugin action item. Imports Tests.test_plugin, runs each
+        test, and logs pass/fail results via the plugin logger.
+
+        Args:
+            action (indigo.PluginAction): The action object passed by Indigo (unused).
         """
         from Tests import test_plugin  # test_devices
         tests = test_plugin.TestPlugin()
