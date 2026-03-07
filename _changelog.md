@@ -1,3 +1,10 @@
+### v2025.2.1
+- Removes node 1 neighbor filter.
+- Adds neighbor list report to plugin menu.
+- Updates docstrings to Google style.
+- Code refinements.
+- Migrates to Indigo TestingBase.
+
 ### v2025.1.0
 - Performance and stability improvements.
  
