@@ -39,7 +39,7 @@ __copyright__ = Dave.__copyright__
 __license__   = Dave.__license__
 __build__     = Dave.__build__
 __title__     = 'Z-Wave Node Matrix Plugin'
-__version__   = '2025.2.0'
+__version__   = '2025.2.1'
 
 
 # =============================================================================
@@ -118,7 +118,7 @@ class Plugin(indigo.PluginBase):
             return True, values_dict
 
         except Exception as error:
-            self.logger.critical("%s" % error)
+            self.logger.critical("%s", error)
             return False, values_dict
 
     # =============================================================================
@@ -127,7 +127,7 @@ class Plugin(indigo.PluginBase):
 
         Args:
             values_dict (indigo.Dict): The preference values submitted from the dialog.
-            user_cancelled (bool): True if the user cancelled the dialog without saving.
+            user_cancelled (bool): True if the user canceled the dialog without saving.
 
         Returns:
             indigo.Dict: The values_dict passed in.
@@ -297,10 +297,6 @@ class Plugin(indigo.PluginBase):
                 device_dict[dev_address]['no_node_1'] = False
                 device_dict[dev_address]['name']      = dev.name
 
-            # Device address already in device_dict but device has no neighbors
-            else:
-                pass
-
         # Add a counter value to each device which is used to display a compressed X axis (show unused nodes = False)
         counter = 1
         for key in sorted(device_dict):
@@ -316,7 +312,7 @@ class Plugin(indigo.PluginBase):
         dev_keys = list(device_dict)
 
         # If the dev_keys dict has zero len, there are no Z-Wave devices to plot.
-        if len(dev_keys) < 1:
+        if len(dev_keys) == 0:
             self.logger.warning("No Z-Wave devices found.")
             return
 
@@ -330,7 +326,7 @@ class Plugin(indigo.PluginBase):
             # Device is lost
             device_delta = datetime.datetime.now() - device_dict[node]['changed']
             if device_delta > datetime.timedelta(days=update_delta):
-                self.logger.warning("Lost Device - %s [Node %s] %s" % (node, device_dict[node]['name'], device_delta))
+                self.logger.warning("Lost Device - %s [Node %s] %s", node, device_dict[node]['name'], device_delta)
                 device_dict[node]['lost'] = True
 
             # Lists neighbor that is not an active address
@@ -350,7 +346,7 @@ class Plugin(indigo.PluginBase):
         # Maps each node address (including pure neighbors) to a 1-based sequential Y-axis
         # position, eliminating gaps when plot_unused_nodes is False.
         dummy_y = {node: counter for counter, node in enumerate(neighbor_list, 1)}
-        self.logger.debug("Device Dict: %s" % device_dict)
+        self.logger.debug("Device Dict: %s", device_dict)
 
         # ============================= Lay Out The Plots =============================
         for node in dev_keys:
@@ -452,7 +448,7 @@ class Plugin(indigo.PluginBase):
             plt.ylim(0, max(dev_keys) + 1)
         else:
             plt.yticks(
-                np.arange(1, len(list(dummy_y.keys())) + 1, 1), sorted(list(dummy_y.keys())),
+                np.arange(1, len(list(dummy_y.keys())) + 1, 1), sorted(dummy_y.keys()),
                 fontsize=tick_font_size, color=foreground_color
             )
             plt.ylim(0, len(dummy_y) + 1)
@@ -573,7 +569,7 @@ class Plugin(indigo.PluginBase):
             for node in sorted_nodes:
                 indigo.server.log(f"{node}")  # Print the list regardless of debug logging setting
         except Exception as err:
-            self.logger.warning("%s" % err)
+            self.logger.warning("%s", err)
 
     def my_tests(self, action: indigo.PluginAction = None) -> None:
         """Run all plugin unit tests and log results to the Indigo Events Log.
@@ -589,9 +585,9 @@ class Plugin(indigo.PluginBase):
 
         def process_test_result(result, name):
             if result[0] is True:
-                self.logger.warning("%s tests passed." % name)
+                self.logger.warning("%s tests passed.", name)
             else:
-                self.logger.warning("%s" % result[1])
+                self.logger.warning("%s", result[1])
 
         # ===================================== Make Matrix =====================================
         test = tests.test_make_the_matrix(self)
