@@ -25,7 +25,7 @@
         <CallbackMethod>print_neighbor_list</CallbackMethod>
     </MenuItem>
 
-    <MenuItem id="killAllComms">
+    <MenuItem id="refreshMatrix">
         <Name>Refresh Matrix</Name>
         <CallbackMethod>make_the_matrix</CallbackMethod>
     </MenuItem>

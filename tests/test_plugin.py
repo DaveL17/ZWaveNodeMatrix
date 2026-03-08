@@ -11,16 +11,17 @@ Prerequisites:
 Usage:
     cd tests && python -m pytest -v
 """
-import os
 import pathlib
-import unittest
+import textwrap
 import xml.etree.ElementTree as ET  # noqa
 
 import httpx
 import shared.classes
+import shared.utils
 
 from httpcodes import codes as httpcodes
 from indigo_devices_filters import DEVICE_FILTERS
+from tests.shared.utils import run_host_script
 
 # Paths relative to this file
 _TESTS_DIR  = pathlib.Path(__file__).parent
@@ -40,35 +41,28 @@ XML_FILES   = [
 class TestPlugin(shared.classes.APIBase):
     """
     Unit tests for the Z-Wave Node Matrix plugin.
-
-    Tests communicate with Indigo via the HTTP REST API. Requires Indigo server running with the plugin active.
-    Configure tests/.env with the required env vars before running.
     """
     @classmethod
     def setUpClass(cls):
-        super().setUpClass()
-        cls.action_group_execute = int(os.getenv("test_plugin.TestPlugin.ACTION_GROUP_EXECUTE", 0))
-        cls.action_group_folder  = int(os.getenv("test_plugin.TestPlugin.ACTION_GROUP_FOLDER", 0))
+        pass
 
-    def test_plugin_action(self):
-        """Test the make_the_matrix action group executes successfully."""
-        msg_id   = "test_plugin_action"
-        response = self.send_simple_command(msg_id, "indigo.actionGroup.execute", self.action_group_execute)
-        self.assertIn(response.status_code, range(200, 300),
-                      f"Action group execute returned status {response.status_code}.")
+    def test_make_the_matrix_plugin_action(self):
+        # Tests plugin action by calling plugin.executeAction directly
+        refresh_matrix = textwrap.dedent("""\
+            try:
+                plugin_id = "com.fogbert.indigoplugin.nodeMatrix"
+                plugin = indigo.server.getPlugin(plugin_id)
+                plugin.executeAction("refreshMatrix")
+                return 200
+            except Exception as e:
+                return e""")
+        result = run_host_script(refresh_matrix)
+        self.assertEqual(int(result), 200, f"{result}")
 
-    def test_make_the_matrix(self):
-        """Test that the action group used to invoke make_the_matrix exists in Indigo.
-
-        Note: the Indigo HTTP API v2 does not support direct plugin action invocation
-        (indigo.server.executePluginAction is not a valid command). make_the_matrix is
-        tested end-to-end via test_plugin_action, which executes the action group that
-        calls it. This test confirms that the action group itself is properly registered.
-        """
-        action_group = self.get_indigo_object("actionGroups", self.action_group_execute)
-        self.assertIsInstance(action_group, dict, "Action group lookup should return a dict.")
-        self.assertEqual(action_group.get("id"), self.action_group_execute,
-                         "Action group ID should match the configured ACTION_GROUP_EXECUTE.")
+    def test_make_the_matrix_action_group_execute(self):
+        # Tests plugin action by calling a configured Action Group object
+        result = run_host_script("indigo.actionGroup.execute(1147059746)")
+        self.assertEqual(result, "", f"{result}")
 
 
 class TestXml(shared.classes.APIBase):
@@ -104,8 +98,7 @@ class TestXml(shared.classes.APIBase):
                     exceptions = ['SupportURL', 'Template']  # node tags that don't require an `id` attribute.
                     node_id    = item.get('id')
                     if item.tag not in exceptions:
-                        self.assertIsNotNone(node_id,
-                                             f"\"{file_type}\" element \"{item.tag}\" attribute 'id' is required.")
+                        self.assertIsNotNone(node_id,f"\"{file_type}\" element \"{item.tag}\" attribute 'id' is required.")
                         self.assertIsInstance(node_id, str, "id names must be strings.")
                         self.assertNotIn(' ', node_id, "`id` names should not contain spaces.")
 
@@ -116,9 +109,8 @@ class TestXml(shared.classes.APIBase):
                         if dev_filter:  # None if not specified in item attributes
                             self.assertIn(dev_filter, DEVICE_FILTERS, "'deviceFilter' values must be strings.")
 
-                    # Test the 'uiPath' attribute:
-                    # The uiPath value can essentially be anything as plugins can create their own uiPaths, so we
-                    # can only test a few things regarding its contents.
+                    # Test the 'uiPath' attribute: The uiPath value can essentially be anything as plugins can create
+                    # their own uiPaths, so we can only test a few things regarding its contents.
                     ui_path = item.get('uiPath', '')
                     self.assertIsInstance(ui_path, str, "uiPath names must be strings.")
 
@@ -146,8 +138,7 @@ class TestXml(shared.classes.APIBase):
                     self.assertIsInstance(thing.text, str, "Config UI support URLs must be strings.")
                     response = httpx.get(thing.text)
                     result   = response.status_code
-                    self.assertEqual(result, 200,
-                                     f"ERROR: Got status code {result} ({httpcodes[result]}) -> {thing.text}.")
+                    self.assertEqual(result, 200, f"ERROR: Got status code {result} ({httpcodes[result]}) -> {thing.text}.")
 
                 # Test Config UI `Field` elements
                 for thing in root.findall(f"./{root.tag[:-1]}/ConfigUI/Field"):
@@ -155,27 +146,17 @@ class TestXml(shared.classes.APIBase):
                     self.assertIsInstance(thing.attrib['id'], str, "Config UI field IDs must be strings.")
                     self.assertFalse(thing.attrib['id'] == "", "Config UI field IDs must not be an empty string.")
                     self.assertIsInstance(thing.attrib['type'], str, "Config UI field types must be strings.")
-                    self.assertIn(thing.attrib['type'].lower(), FIELD_TYPES,
-                                  f"Config UI field types must be one of {FIELD_TYPES}.")
+                    self.assertIn(thing.attrib['type'].lower(), FIELD_TYPES, f"Config UI field types must be one of {FIELD_TYPES}.")
                     # Optional attributes
-                    self.assertIsInstance(thing.attrib.get('defaultValue', ""), str,
-                                          "Config UI defaultValue types must be strings.")
-                    self.assertIsInstance(thing.attrib.get('enabledBindingId', ""), str,
-                                          "Config UI enabledBindingId types must be strings.")
-                    self.assertIsInstance(thing.attrib.get('enabledBindingNegate', ""), str,
-                                          "Config UI enabledBindingNegate types must be strings.")
-                    self.assertIn(thing.attrib.get('hidden', "false"), ['true', 'false'],
-                                  "Config UI hidden attribute must be 'true' or 'false'.")
-                    self.assertIn(thing.attrib.get('readonly', "false"), ['true', 'false'],
-                                  "Config UI readonly attribute must be 'true' or 'false'.")
-                    self.assertIn(thing.attrib.get('secure', "false"), ['true', 'false'],
-                                  "Config UI secure attribute must be 'true' or 'false'.")
-                    self.assertIsInstance(thing.attrib.get('tooltip', ""), str,
-                                          "Config UI field tool tips must be strings.")
-                    self.assertIsInstance(thing.attrib.get('visibleBindingId', ""), str,
-                                          "Config UI visibleBindingId types must be strings.")
-                    self.assertIsInstance(thing.attrib.get('visibleBindingValue', ""), str,
-                                          "Config UI visibleBindingValue types must be strings.")
+                    self.assertIsInstance(thing.attrib.get('defaultValue', ""), str, "Config UI defaultValue types must be strings.")
+                    self.assertIsInstance(thing.attrib.get('enabledBindingId', ""), str, "Config UI enabledBindingId types must be strings.")
+                    self.assertIsInstance(thing.attrib.get('enabledBindingNegate', ""), str, "Config UI enabledBindingNegate types must be strings.")
+                    self.assertIn(thing.attrib.get('hidden', "false"), ['true', 'false'], "Config UI hidden attribute must be 'true' or 'false'.")
+                    self.assertIn(thing.attrib.get('readonly', "false"), ['true', 'false'], "Config UI readonly attribute must be 'true' or 'false'.")
+                    self.assertIn(thing.attrib.get('secure', "false"), ['true', 'false'], "Config UI secure attribute must be 'true' or 'false'.")
+                    self.assertIsInstance(thing.attrib.get('tooltip', ""), str, "Config UI field tool tips must be strings.")
+                    self.assertIsInstance(thing.attrib.get('visibleBindingId', ""), str, "Config UI visibleBindingId types must be strings.")
+                    self.assertIsInstance(thing.attrib.get('visibleBindingValue', ""), str, "Config UI visibleBindingValue types must be strings.")
 
         except AssertionError as err:
             print(f"ERROR: {self._testMethodName}: {err}")

@@ -27,8 +27,6 @@ kDefaultPluginPrefs = {
     'plotLostDevicesColor': "FF 00 00",
     'plotLostDevicesTimeDelta': "7",
     'plotNoNode': False,
-    'plotNoNode1': False,
-    'plotNoNode1Color': "FF 00 00",
     'plotNoNodeColor': "00 33 FF",
     'plotOwnNodes': False,
     'plotOwnNodesColor': "33 33 33",

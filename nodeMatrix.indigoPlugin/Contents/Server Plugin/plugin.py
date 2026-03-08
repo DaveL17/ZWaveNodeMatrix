@@ -279,7 +279,6 @@ class Plugin(indigo.PluginBase):
                 device_dict[dev_address]['invalid_neighbor'] = False
                 device_dict[dev_address]['lost']             = False
                 device_dict[dev_address]['neighbors']        = neighbors
-                device_dict[dev_address]['no_node_1']        = False
                 device_dict[dev_address]['name']             = dev.name
 
                 counter += 1
@@ -290,12 +289,11 @@ class Plugin(indigo.PluginBase):
                 device_dict[dev_address]['battery'] = (
                     dev.ownerProps.get('SupportsBatteryLevel', False)
                 )
-                device_dict[dev_address]['changed']   = dev.lastChanged
+                device_dict[dev_address]['changed']          = dev.lastChanged
                 device_dict[dev_address]['invalid_neighbor'] = False
-                device_dict[dev_address]['lost']      = False
-                device_dict[dev_address]['neighbors'] = neighbors
-                device_dict[dev_address]['no_node_1'] = False
-                device_dict[dev_address]['name']      = dev.name
+                device_dict[dev_address]['lost']             = False
+                device_dict[dev_address]['neighbors']        = neighbors
+                device_dict[dev_address]['name']             = dev.name
 
         # Add a counter value to each device which is used to display a compressed X axis (show unused nodes = False)
         counter = 1
@@ -306,7 +304,7 @@ class Plugin(indigo.PluginBase):
         # Dummy dict of devices for testing.
         # Note!!! the dummy dict won't work with the Print Neighbor List menu item because it queries the server and
         # not the dummy dict. Comment out before release.
-        # from dummy_dict import test_file as device_dict  # pylint: disable=unused-wildcard-import  # TODO: comment this
+        # from dummy_dict import test_file as device_dict  # TODO: comment this
         # self.logger.warning("Using dummy dict!!!")  # TODO: comment this
 
         dev_keys = list(device_dict)
@@ -318,10 +316,6 @@ class Plugin(indigo.PluginBase):
 
         # ======================= Update Device Characteristics =======================
         for node in dev_keys:
-
-            # No node 1 in neighbor list
-            if 1 not in device_dict[node]['neighbors']:
-                device_dict[node]['no_node_1'] = True
 
             # Device is lost
             device_delta = datetime.datetime.now() - device_dict[node]['changed']
@@ -570,37 +564,3 @@ class Plugin(indigo.PluginBase):
                 indigo.server.log(f"{node}")  # Print the list regardless of debug logging setting
         except Exception as err:
             self.logger.warning("%s", err)
-
-    def my_tests(self, action: indigo.PluginAction = None) -> None:
-        """Run all plugin unit tests and log results to the Indigo Events Log.
-
-        Called from an Indigo plugin action item. Imports Tests.test_plugin, runs each
-        test, and logs pass/fail results via the plugin logger.
-
-        Args:
-            action (indigo.PluginAction): The action object passed by Indigo (unused).
-        """
-        from Tests import test_plugin  # test_devices
-        tests = test_plugin.TestPlugin()
-
-        def process_test_result(result, name):
-            if result[0] is True:
-                self.logger.warning("%s tests passed.", name)
-            else:
-                self.logger.warning("%s", result[1])
-
-        # ===================================== Make Matrix =====================================
-        test = tests.test_make_the_matrix(self)
-        process_test_result(test, "Make Matrix")
-
-        # ===================================== Execute Action =====================================
-        test = tests.test_plugin_action(self)
-        process_test_result(test, "Execute Action")
-
-        # ===================================== Font List =====================================
-        test = tests.test_get_font_list(self)
-        process_test_result(test, "Font List")
-
-        # ===================================== Prefs Validation =====================================
-        test = tests.test_plugin_prefs_validation(self)
-        process_test_result(test, "Prefs Validation")
