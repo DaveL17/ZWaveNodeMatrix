@@ -65,6 +65,7 @@ class Plugin(indigo.PluginBase):
 
         # ========================== Initialize DLFramework ===========================
         self.Fogbert = Dave.Fogbert(self)
+        self._test_device_dict = None  # Injected by tests; None in production
 
         # =========================== Audit Server Version ============================
         self.Fogbert.audit_server_version(min_ver=2022)
@@ -301,11 +302,10 @@ class Plugin(indigo.PluginBase):
             device_dict[key]['counter'] = counter
             counter += 1
 
-        # Dummy dict of devices for testing.
-        # Note!!! the dummy dict won't work with the Print Neighbor List menu item because it queries the server and
-        # not the dummy dict. Comment out before release.
-        # from dummy_dict import test_file as device_dict  # TODO: comment this
-        # self.logger.warning("Using dummy dict!!!")  # TODO: comment this
+        # Test hook: replace device_dict with injected data when set by tests.
+        if self._test_device_dict is not None:
+            device_dict = self._test_device_dict
+            self.logger.warning("Using test device dict — not for production use.")
 
         dev_keys = list(device_dict)
 
@@ -544,6 +544,36 @@ class Plugin(indigo.PluginBase):
             values_dict (indigo.Dict): Values dict passed by Indigo (unused).
         """
         self.make_the_matrix()
+
+    # =============================================================================
+    def make_the_matrix_test_action(self, values_dict: indigo.Dict):  # noqa
+        """Indigo action that runs make_the_matrix() with dummy_dict data injected.
+
+        Used exclusively by automated tests to verify PNG output without a live
+        Z-Wave network. Loads dummy_dict.test_file, runs make_the_matrix(), then
+        clears the hook.
+
+        Args:
+            values_dict (indigo.Dict): Values dict passed by Indigo (unused).
+        """
+        try:
+            from dummy_dict import test_file
+            self._test_device_dict = test_file
+            self.make_the_matrix()
+        finally:
+            self._test_device_dict = None
+
+    # =============================================================================
+    def print_neighbor_list_action(self, values_dict: indigo.Dict):  # noqa
+        """Indigo action handler that triggers a neighbor-list log.
+
+        Called via executeAction("print_neighbor_list_action"). Delegates to
+        print_neighbor_list().
+
+        Args:
+            values_dict (indigo.Dict): Values dict passed by Indigo (unused).
+        """
+        self.print_neighbor_list()
 
     # =============================================================================
     def print_neighbor_list(self):

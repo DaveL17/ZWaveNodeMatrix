@@ -5,4 +5,14 @@
         <Name>Refresh Matrix</Name>
         <CallbackMethod>make_the_matrix_action</CallbackMethod>
     </Action>
+
+    <Action id="print_neighbor_list_action">
+        <Name>Print Neighbor List</Name>
+        <CallbackMethod>print_neighbor_list_action</CallbackMethod>
+    </Action>
+
+    <Action id="refreshMatrixTest">
+        <Name>Refresh Matrix (Test)</Name>
+        <CallbackMethod>make_the_matrix_test_action</CallbackMethod>
+    </Action>
 </Actions>

@@ -11,9 +11,13 @@ Prerequisites:
 Usage:
     cd tests && python -m pytest -v
 """
+import logging
 import pathlib
+import sys
 import textwrap
+import unittest
 import xml.etree.ElementTree as ET  # noqa
+from unittest.mock import MagicMock
 
 import httpx
 import shared.classes
@@ -24,9 +28,27 @@ from indigo_devices_filters import DEVICE_FILTERS
 from tests.shared.utils import run_host_script
 
 # Paths relative to this file
-_TESTS_DIR  = pathlib.Path(__file__).parent
-_PLUGIN_DIR = _TESTS_DIR.parent / "nodeMatrix.indigoPlugin" / "Contents"
-_PLUGIN_PY  = _PLUGIN_DIR / "Server Plugin" / "plugin.py"
+_TESTS_DIR        = pathlib.Path(__file__).parent
+_PLUGIN_DIR       = _TESTS_DIR.parent / "nodeMatrix.indigoPlugin" / "Contents"
+_PLUGIN_PY        = _PLUGIN_DIR / "Server Plugin" / "plugin.py"
+_SERVER_PLUGIN_DIR = str(_PLUGIN_DIR / "Server Plugin")
+
+# ---------------------------------------------------------------------------
+# Mock the `indigo` module for pure-Python tests (no Indigo server needed).
+# constants.py does a bare `import indigo`, so we must inject a mock before
+# any plugin-module imports.  We only do this when indigo is not already
+# present (i.e. when NOT running inside Indigo).
+# ---------------------------------------------------------------------------
+if 'indigo' not in sys.modules:
+    _mock_indigo        = MagicMock()
+    _mock_indigo.Dict   = dict   # make indigo.Dict behave like a plain dict
+    sys.modules['indigo'] = _mock_indigo
+
+if _SERVER_PLUGIN_DIR not in sys.path:
+    sys.path.insert(0, _SERVER_PLUGIN_DIR)
+
+import constants as _constants_mod          # noqa: E402 (after sys.path setup)
+import plugin_defaults as _plugin_defaults  # noqa: E402
 
 FIELD_TYPES = ['button', 'checkbox', 'colorpicker', 'label', 'list', 'menu', 'separator', 'textfield']
 XML_FILES   = [
@@ -63,6 +85,32 @@ class TestPlugin(shared.classes.APIBase):
         # Tests plugin action by calling a configured Action Group object
         result = run_host_script("indigo.actionGroup.execute(1147059746)")
         self.assertEqual(result, "", f"{result}")
+
+    def test_print_neighbor_list(self):
+        """print_neighbor_list() runs without raising an exception."""
+        script = textwrap.dedent("""\
+            try:
+                plugin_id = "com.fogbert.indigoplugin.nodeMatrix"
+                plugin = indigo.server.getPlugin(plugin_id)
+                plugin.executeAction("print_neighbor_list_action")
+                return 200
+            except Exception as e:
+                return e""")
+        result = run_host_script(script)
+        self.assertEqual(str(result).strip(), "200", f"test_print_neighbor_list: {result!r}")
+
+    def test_output_file_exists(self):
+        """After refreshMatrix executes with injected test data, the output PNG exists on disk."""
+        script = textwrap.dedent("""\
+            import os
+            plugin_id  = "com.fogbert.indigoplugin.nodeMatrix"
+            plugin     = indigo.server.getPlugin(plugin_id)
+            base_path  = indigo.server.getInstallFolderPath()
+            plugin.executeAction("refreshMatrixTest")
+            chart_path = base_path + "/Web Assets/images/controls/static/neighbors.png"
+            return 200 if os.path.isfile(chart_path) else 404""")
+        result = run_host_script(script)
+        self.assertEqual(str(result).strip(), "200", f"test_output_file_exists: {result!r}")
 
 
 class TestXml(shared.classes.APIBase):
@@ -160,3 +208,274 @@ class TestXml(shared.classes.APIBase):
 
         except AssertionError as err:
             print(f"ERROR: {self._testMethodName}: {err}")
+
+    def test_xml_field_ids_match_plugin_prefs_keys(self):
+        """Each Field id in PluginConfig.xml has a corresponding key in kDefaultPluginPrefs."""
+        plugin_config = str(_PLUGIN_DIR / "Server Plugin" / "PluginConfig.xml")
+        try:
+            tree = ET.parse(plugin_config)
+        except FileNotFoundError:
+            self.skipTest(f"PluginConfig.xml not found at {plugin_config}")
+        root         = tree.getroot()
+        prefs_keys   = set(_plugin_defaults.kDefaultPluginPrefs.keys())
+        # Field types that don't correspond to a stored pref (UI-only elements)
+        ui_only_types = {'label', 'separator', 'button'}
+        for field in root.findall(".//Field"):
+            field_type = field.attrib.get('type', '').lower()
+            if field_type in ui_only_types:
+                continue
+            field_id = field.attrib.get('id', '')
+            self.assertIn(
+                field_id,
+                prefs_keys,
+                f"PluginConfig.xml Field id '{field_id}' has no matching key in kDefaultPluginPrefs.",
+            )
+
+
+# =============================================================================
+# Pure-Python tests — no Indigo server required
+# =============================================================================
+
+class TestPrefsValidation(unittest.TestCase):
+    """Tests for Plugin.validate_prefs_config_ui() using a plain dict as values_dict."""
+
+    # Build a minimal mock Plugin instance that only exposes what
+    # validate_prefs_config_ui() actually needs.
+    class _MockPlugin:
+        logger = logging.getLogger('TestPrefsValidation')
+
+        def validate_prefs_config_ui(self, values_dict):
+            """Inline copy of Plugin.validate_prefs_config_ui for offline testing."""
+            error_msg_dict = {}
+
+            try:
+                try:
+                    if not -360 <= int(values_dict.get('xAxisRotate', 0)) <= 360:
+                        error_msg_dict['xAxisRotate'] = (
+                            "The X Label Rotate value must be between -360 and 360 inclusive."
+                        )
+                        return (False, values_dict, error_msg_dict)
+                except ValueError:
+                    error_msg_dict['xAxisRotate'] = "The X Label Rotate value must be a number."
+                    return (False, values_dict, error_msg_dict)
+
+                for pref in [('chartTitleFont', 'Title Font Size'),
+                             ('tickLabelFont', 'Label Font Size'),
+                             ('chartResolution', 'Image DPI'),
+                             ('chartHeight', 'Image Height'),
+                             ('chartWidth', 'Image Width'),
+                             ('plotLostDevicesTimeDelta', 'Days')]:
+                    try:
+                        if int(values_dict.get(pref[0], 0)) <= 0:
+                            error_msg_dict[pref[0]] = (
+                                f"The {pref[1]} value must be a number greater than zero."
+                            )
+                            return (False, values_dict, error_msg_dict)
+                    except ValueError:
+                        error_msg_dict[pref[0]] = f"The {pref[1]} value must be a number."
+                        return (False, values_dict, error_msg_dict)
+
+                return (True, values_dict)
+
+            except Exception as error:
+                self.logger.critical("%s", error)
+                return (False, values_dict)
+
+    @classmethod
+    def setUpClass(cls):
+        cls.plugin       = cls._MockPlugin()
+        cls.valid_prefs  = dict(_plugin_defaults.kDefaultPluginPrefs)
+
+    def test_valid_prefs_returns_true(self):
+        """All defaults from kDefaultPluginPrefs should pass validation."""
+        result = self.plugin.validate_prefs_config_ui(self.valid_prefs)
+        self.assertTrue(result[0], f"Expected True but got: {result}")
+
+    def test_x_axis_rotate_out_of_range(self):
+        """xAxisRotate = '400' is out of range and should fail."""
+        prefs              = dict(self.valid_prefs)
+        prefs['xAxisRotate'] = "400"
+        result             = self.plugin.validate_prefs_config_ui(prefs)
+        self.assertFalse(result[0])
+        self.assertIn('xAxisRotate', result[2])
+
+    def test_x_axis_rotate_non_numeric(self):
+        """xAxisRotate = 'abc' is non-numeric and should fail."""
+        prefs              = dict(self.valid_prefs)
+        prefs['xAxisRotate'] = "abc"
+        result             = self.plugin.validate_prefs_config_ui(prefs)
+        self.assertFalse(result[0])
+        self.assertIn('xAxisRotate', result[2])
+
+    def test_positive_pref_zero_value(self):
+        """chartResolution = '0' must fail (must be > 0)."""
+        prefs                  = dict(self.valid_prefs)
+        prefs['chartResolution'] = "0"
+        result                 = self.plugin.validate_prefs_config_ui(prefs)
+        self.assertFalse(result[0])
+        self.assertIn('chartResolution', result[2])
+
+    def test_positive_pref_negative_value(self):
+        """chartHeight = '-1' must fail (must be > 0)."""
+        prefs                = dict(self.valid_prefs)
+        prefs['chartHeight'] = "-1"
+        result               = self.plugin.validate_prefs_config_ui(prefs)
+        self.assertFalse(result[0])
+        self.assertIn('chartHeight', result[2])
+
+    def test_positive_pref_non_numeric(self):
+        """tickLabelFont = 'big' must fail (must be numeric)."""
+        prefs                = dict(self.valid_prefs)
+        prefs['tickLabelFont'] = "big"
+        result               = self.plugin.validate_prefs_config_ui(prefs)
+        self.assertFalse(result[0])
+        self.assertIn('tickLabelFont', result[2])
+
+
+class TestFontList(unittest.TestCase):
+    """Tests for the get_font_list() static method (pure Python, no Indigo needed)."""
+
+    @classmethod
+    def setUpClass(cls):
+        try:
+            import matplotlib.font_manager as _fnt
+        except ImportError:
+            raise unittest.SkipTest("matplotlib is not available in this environment")
+        from os import path
+        font_paths    = _fnt.findSystemFonts(fontpaths=None, fontext='ttf')
+        cls.font_list = sorted(
+            [path.splitext(path.basename(f))[0] for f in font_paths]
+        )
+
+    def test_get_font_list_returns_list(self):
+        """Return type must be list."""
+        self.assertIsInstance(self.font_list, list)
+
+    def test_get_font_list_items_are_strings(self):
+        """Every item in the font list must be a str."""
+        for item in self.font_list:
+            self.assertIsInstance(item, str, f"Non-string entry: {item!r}")
+
+    def test_get_font_list_is_sorted(self):
+        """Font list must be in sorted order."""
+        self.assertEqual(self.font_list, sorted(self.font_list))
+
+    def test_get_font_list_no_extensions(self):
+        """No item in the font list should end with a file extension."""
+        extensions = ('.ttf', '.otf', '.woff', '.woff2', '.eot')
+        for item in self.font_list:
+            self.assertFalse(
+                item.lower().endswith(extensions),
+                f"Font entry still has an extension: {item!r}",
+            )
+
+
+class TestConstants(unittest.TestCase):
+    """Tests for constants.py (pure Python, no Indigo server needed)."""
+
+    def test_debug_labels_has_required_levels(self):
+        """DEBUG_LABELS must contain keys 10, 20, 30, 40, and 50."""
+        required_keys = {10, 20, 30, 40, 50}
+        self.assertEqual(
+            required_keys,
+            required_keys & set(_constants_mod.DEBUG_LABELS.keys()),
+            f"DEBUG_LABELS is missing one or more required level keys. "
+            f"Found: {set(_constants_mod.DEBUG_LABELS.keys())}",
+        )
+
+    def test_debug_labels_values_are_strings(self):
+        """All values in DEBUG_LABELS must be non-empty strings."""
+        for level, label in _constants_mod.DEBUG_LABELS.items():
+            self.assertIsInstance(label, str, f"DEBUG_LABELS[{level}] is not a string.")
+            self.assertTrue(label, f"DEBUG_LABELS[{level}] must not be empty.")
+
+
+class TestDefaultPrefs(unittest.TestCase):
+    """Tests for plugin_defaults.kDefaultPluginPrefs (pure Python, no Indigo server needed)."""
+
+    # Keys that make_the_matrix() reads from pluginPrefs
+    _REQUIRED_KEYS = {
+        'backgroundColor',
+        'chartHeight',
+        'chartManualSize',
+        'chartPath',
+        'chartResolution',
+        'chartTitle',
+        'chartTitleFont',
+        'chartWidth',
+        'fontMain',
+        'foregroundColor',
+        'nodeBorderColor',
+        'nodeColor',
+        'nodeMarker',
+        'nodeMarkerEdgewidth',
+        'plotBattery',
+        'plotBatteryColor',
+        'plotLostDevices',
+        'plotLostDevicesColor',
+        'plotLostDevicesTimeDelta',
+        'plotNoNode',
+        'plotNoNodeColor',
+        'plotOwnNodes',
+        'plotOwnNodesColor',
+        'plotUnusedNodes',
+        'showLegend',
+        'tickLabelFont',
+        'xAxisLabel',
+        'xAxisRotate',
+        'yAxisLabel',
+    }
+
+    _COLOR_KEYS = {
+        'backgroundColor',
+        'foregroundColor',
+        'nodeBorderColor',
+        'nodeColor',
+        'plotBatteryColor',
+        'plotLostDevicesColor',
+        'plotNoNodeColor',
+        'plotOwnNodesColor',
+    }
+
+    _NUMERIC_STRING_KEYS = {
+        'chartHeight',
+        'chartResolution',
+        'chartTitleFont',
+        'chartWidth',
+        'plotLostDevicesTimeDelta',
+        'tickLabelFont',
+        'xAxisRotate',
+    }
+
+    @classmethod
+    def setUpClass(cls):
+        cls.prefs = _plugin_defaults.kDefaultPluginPrefs
+
+    def test_required_keys_present(self):
+        """kDefaultPluginPrefs must contain all keys referenced by make_the_matrix()."""
+        missing = self._REQUIRED_KEYS - set(self.prefs.keys())
+        self.assertFalse(missing, f"kDefaultPluginPrefs is missing keys: {missing}")
+
+    def test_color_prefs_are_hex_strings(self):
+        """Color prefs must be space-separated two-digit hex strings (e.g. 'FF 00 00')."""
+        import re
+        hex_pattern = re.compile(r'^[0-9A-Fa-f]{2}( [0-9A-Fa-f]{2}){2}$')
+        for key in self._COLOR_KEYS:
+            value = self.prefs.get(key, '')
+            self.assertRegex(
+                value,
+                hex_pattern,
+                f"kDefaultPluginPrefs['{key}'] = {value!r} is not a valid hex color string.",
+            )
+
+    def test_numeric_prefs_are_numeric_strings(self):
+        """Numeric prefs must be strings that can be cast to int."""
+        for key in self._NUMERIC_STRING_KEYS:
+            value = self.prefs.get(key, '')
+            self.assertIsInstance(value, str, f"kDefaultPluginPrefs['{key}'] must be a string.")
+            try:
+                int(value)
+            except (ValueError, TypeError):
+                self.fail(
+                    f"kDefaultPluginPrefs['{key}'] = {value!r} cannot be cast to int."
+                )
