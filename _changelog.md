@@ -10,12 +10,10 @@
 
 ### v2025.1.0
 - Performance and stability improvements.
- 
+
 ### v2023.1.0
 - Minor UI enhancements.
 - Minor Wiki enhancements.
-
-### v2023.1.0
 - Adds `X (filled)` to Node Marker styles.
 - Adds "About Matplotlib" to plugin menu.
 - Fixes bug where charts wouldn't generate in Matplotlib 3.8 (shipping with Indigo 2023.2). Should still work for prior
@@ -40,8 +38,6 @@
 
 ### v2022.0.1
 - Fixes bug where dummy testing data can override real data.
-
-### v2022.0.1
 - Updates plugin for Indigo 2022.1 and Python 3.
 - Fixes bug where chart height and width settings were reversed.
 - Improves dummy device data (for testing).
