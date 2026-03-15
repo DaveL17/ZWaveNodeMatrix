@@ -4,6 +4,9 @@
 - Updates docstrings to Google style.
 - Code refinements.
 - Migrates to Indigo TestingBase.
+- Standardized project `.gitignore` file.
+- Removes unused variables from `tests/.env` file.
+- Removes empty plugin directories.
 
 ### v2025.1.0
 - Performance and stability improvements.
