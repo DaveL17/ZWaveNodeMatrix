@@ -71,7 +71,7 @@ class Plugin(indigo.PluginBase):
         self.Fogbert.audit_server_version(min_ver=2022)
 
     # =============================================================================
-    def log_plugin_environment(self):
+    def log_plugin_environment(self, action: indigo.actionGroup=None) -> None:
         """Log plugin environment information when the plugin is first started."""
         self.Fogbert.pluginEnvironment()
 
@@ -173,7 +173,7 @@ class Plugin(indigo.PluginBase):
         return sorted(names)
 
     # =============================================================================
-    def make_the_matrix(self):
+    def make_the_matrix(self, action: indigo.actionGroup=None) -> None:
         """Generate and save the Z-Wave node matrix image.
 
         Iterates all Z-Wave devices, builds a neighbor relationship dictionary, and plots
@@ -576,7 +576,7 @@ class Plugin(indigo.PluginBase):
         self.print_neighbor_list()
 
     # =============================================================================
-    def print_neighbor_list(self):
+    def print_neighbor_list(self, action: indigo.actionGroup=None) -> None:
         """Log a sorted list of Z-Wave node neighbor strings to the Indigo Events Log."""
         try:
             nodes_list = []

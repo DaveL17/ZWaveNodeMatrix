@@ -7,10 +7,13 @@
         <ConfigUI>
             <!-- Matplotlib citation per TOS. -->
             <Field id="aboutLabel" type="label">
-                <Label>Matplotlib is a 2D graphics package used for Python for application development, interactive scripting, and publication-quality image generation across user interfaces and operating systems.</Label>
+                <Label>Matplotlib is an open-source Python library for creating high-quality 2D visualizations and plots. It provides a flexible interface for generating charts such as line graphs, bar charts, scatter plots, histograms, and more, with extensive customization options. Widely used in scientific computing, data analysis, and education, Matplotlib works seamlessly with libraries like NumPy and pandas and supports multiple output formats for publication-quality figures.</Label>
             </Field>
             <Field id="authorLabel" type="label">
                 <Label>Authored by: J.D. Hunter</Label>
+            </Field>
+            <Field id="licenseLabel" type="label">
+                <Label>https://matplotlib.org/stable/project/license.html</Label>
             </Field>
         </ConfigUI>
     </MenuItem>
