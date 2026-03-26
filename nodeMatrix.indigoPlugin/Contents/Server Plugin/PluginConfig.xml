@@ -87,7 +87,7 @@
     </Field>
 
     <!-- Node Markers Template -->
-    <Template file="Templates/node_markers.xml" />
+    <Template id="node_markers_template" file="Templates/node_markers.xml" />
 
     <Field id="nodeColor" type="colorpicker" defaultValue="FF FF FF" tooltip="Enter the color for each neighbor plot.">
         <Label>Node Color:</Label>
@@ -183,6 +183,6 @@
     </Field>
 
     <!-- Debugging Template -->
-    <Template file="DLFramework/template_debugging.xml" />
+    <Template id="debug_template" file="DLFramework/template_debugging.xml" />
 
 </PluginConfig>
