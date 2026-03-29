@@ -19,7 +19,7 @@ class TestMenuItems(APIBase):
         pass
 
     @staticmethod
-    def _execute_action(action_id: str) -> bool | httpx.Response:
+    def _execute_action(action_id: str, msg: str = "test-plugin-menu-item") -> bool | httpx.Response:
         """Post a plugin.executeAction command to the Indigo Web Server API.
 
         Args:
@@ -30,7 +30,7 @@ class TestMenuItems(APIBase):
         """
         try:
             message = {
-                "id": "test-plugin-menu-item",
+                "id": f"{msg}",
                 "message": "plugin.executeAction",
                 "pluginId": os.getenv("PLUGIN_ID"),
                 "actionId": action_id,
@@ -43,15 +43,15 @@ class TestMenuItems(APIBase):
 
     def test_refresh_matrix(self):
         """Post a plugin.refreshMatrix command to the Indigo Web Server."""
-        result = self._execute_action("refreshMatrix")
+        result = self._execute_action("refreshMatrix", msg="test_refresh_matrix_action")
         self.assertEqual(result.status_code, 200, "The refresh matrix menu item call was not successful.")
 
     def test_print_neighbor_list(self):
         """Post a plugin.printNeighborList command to the Indigo Web Server."""
-        result = self._execute_action("print_neighbor_list_action")
+        result = self._execute_action("print_neighbor_list_action", msg="test_print_neighbor_list_action")
         self.assertEqual(result.status_code, 200, "The print neighbor list menu item call was not successful.")
 
     def test_print_environment_info(self):
         """Post a plugin.printEnvironmentInfo command to the Indigo Web Server."""
-        result = self._execute_action("log_plugin_environment")
+        result = self._execute_action("log_plugin_environment", msg="test_print_environment_info")
         self.assertEqual(result.status_code, 200, "The print environment info menu item call was not successful.")
