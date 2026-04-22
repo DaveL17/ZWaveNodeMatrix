@@ -1,3 +1,10 @@
+### v2025.2.2
+- Fixes unbalanced parenthesis in debug level log message.
+- Fixes `nodeMarkerEdgewidth` pref being passed as string instead of float.
+- Removes dead counter variable from device dictionary build loop.
+- Fixes swapped name/address args in lost device log warning.
+- Removes redundant condition from duplicate device address check.
+
 ### v2025.2.1
 - Removes node 1 neighbor filter.
 - Adds neighbor list report to plugin menu.

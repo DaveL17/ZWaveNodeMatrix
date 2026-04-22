@@ -11,7 +11,7 @@ from tests.shared import APIBase # noqa
 dotenv.load_dotenv(os.path.join(os.path.dirname(__file__), '.env'))
 
 
-# ===================================== simpleeval.py =====================================
+# ===================================== Menu Items =====================================
 class TestMenuItems(APIBase):
 
     @classmethod

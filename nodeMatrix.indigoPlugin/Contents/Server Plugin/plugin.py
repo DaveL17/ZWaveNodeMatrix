@@ -39,7 +39,7 @@ __copyright__ = Dave.__copyright__
 __license__   = Dave.__license__
 __build__     = Dave.__build__
 __title__     = 'Z-Wave Node Matrix Plugin'
-__version__   = '2025.2.1'
+__version__   = '2025.2.2'
 
 
 # =============================================================================
@@ -141,7 +141,7 @@ class Plugin(indigo.PluginBase):
             # Debug Logging
             self.debug_level = int(values_dict.get('showDebugLevel', "30"))
             self.indigo_log_handler.setLevel(self.debug_level)
-            indigo.server.log(f"Debugging on (Level: {DEBUG_LABELS[self.debug_level]} ({self.debug_level})")
+            indigo.server.log(f"Debugging on (Level: {DEBUG_LABELS[self.debug_level]} ({self.debug_level}))")
             self.logger.debug("Plugin prefs saved.")
 
         else:
@@ -195,7 +195,7 @@ class Plugin(indigo.PluginBase):
         nd_clr_border          = self.pluginPrefs.get('nodeBorderColor', '66 FF 00')
         node_color_border      = f"#{nd_clr_border.replace(' ', '').replace('#', '')}"
         node_marker            = self.pluginPrefs.get('nodeMarker', '.')
-        node_marker_edge_width = self.pluginPrefs.get('nodeMarkerEdgewidth', '1')
+        node_marker_edge_width = float(self.pluginPrefs.get('nodeMarkerEdgewidth', '1'))
         file_path              = f"{INSTALL_PATH}Web Assets/images/controls/static/neighbors.png"
         output_file            = self.pluginPrefs.get('chartPath', file_path)
         tick_font_size         = int(self.pluginPrefs.get('tickLabelFont', 6))
@@ -258,7 +258,6 @@ class Plugin(indigo.PluginBase):
 
         # ========================== Build Master Dictionary ==========================
         # Build the master dictionary of the Z-Wave Mesh Network.
-        counter       = 1
         device_dict   = {}
         neighbor_list = []
 
@@ -282,11 +281,9 @@ class Plugin(indigo.PluginBase):
                 device_dict[dev_address]['neighbors']        = neighbors
                 device_dict[dev_address]['name']             = dev.name
 
-                counter += 1
-
             # Duplicate address (e.g. multi-endpoint device) with a non-empty neighbor list —
             # overwrite with the most complete data.
-            elif dev_address in device_dict and neighbors:
+            elif neighbors:
                 device_dict[dev_address]['battery'] = (
                     dev.ownerProps.get('SupportsBatteryLevel', False)
                 )
@@ -320,7 +317,7 @@ class Plugin(indigo.PluginBase):
             # Device is lost
             device_delta = datetime.datetime.now() - device_dict[node]['changed']
             if device_delta > datetime.timedelta(days=update_delta):
-                self.logger.warning("Lost Device - %s [Node %s] %s", node, device_dict[node]['name'], device_delta)
+                self.logger.warning("Lost Device - %s [Node %s] %s", device_dict[node]['name'], node, device_delta)
                 device_dict[node]['lost'] = True
 
             # Lists neighbor that is not an active address
@@ -576,7 +573,7 @@ class Plugin(indigo.PluginBase):
         self.print_neighbor_list()
 
     # =============================================================================
-    def print_neighbor_list(self, action: indigo.actionGroup=None) -> None:
+    def print_neighbor_list(self, action: indigo.actionGroup = None) -> None:
         """Log a sorted list of Z-Wave node neighbor strings to the Indigo Events Log."""
         try:
             nodes_list = []
