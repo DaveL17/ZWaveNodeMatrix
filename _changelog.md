@@ -1,3 +1,6 @@
+### v2025.2.3
+- Adds filled triangle markers (`^`, `v`, `<`, `>`) to the node marker list.
+
 ### v2025.2.2
 - Fixes `refreshMatrixTest` action not registered in `Actions.xml`, causing the test matrix generation with dummy data to produce an empty chart.
 - Fixes legend handles stored as tuples of `Line2D` objects rather than `Line2D` objects directly.
