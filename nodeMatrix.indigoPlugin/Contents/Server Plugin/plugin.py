@@ -186,8 +186,6 @@ class Plugin(indigo.PluginBase):
         background_color       = f"#{bk_color.replace(' ', '').replace('#', '')}"
         chart_title            = self.pluginPrefs.get('chartTitle', 'Z-Wave Node Matrix')
         chart_title_font       = int(self.pluginPrefs.get('chartTitleFont', 9))
-        fnt_color              = self.pluginPrefs.get('foregroundColor', '88 88 88')
-        font_color             = f"#{fnt_color.replace(' ', '').replace('#', '')}"
         font_name              = self.pluginPrefs.get('fontMain', 'Arial')
         fore_color             = self.pluginPrefs.get('foregroundColor', '88 88 88')
         foreground_color       = f"#{fore_color.replace(' ', '').replace('#', '')}"
@@ -246,7 +244,7 @@ class Plugin(indigo.PluginBase):
             'transparent': True
         }
         kwarg_title = {
-            'color': font_color,
+            'color': foreground_color,
             'fontname': font_name,
             'fontsize': chart_title_font
         }
@@ -453,46 +451,41 @@ class Plugin(indigo.PluginBase):
             # Neighbor
             legend_labels.append("neighbor")
             legend_styles.append(
-                tuple(plt.plot([], color=node_color_border, linestyle='', marker=node_marker,
-                               markerfacecolor=node_color
-                               )
-                      )
+                plt.plot([], color=node_color_border, linestyle='', marker=node_marker,
+                         markerfacecolor=node_color
+                         )[0]
             )
 
             if plot_battery:
                 legend_labels.append("battery")
                 legend_styles.append(
-                    tuple(plt.plot([], color=plot_battery_color, linestyle='', marker=node_marker,
-                                   markerfacecolor=node_color,
-                                   markeredgewidth=node_marker_edge_width,
-                                   markeredgecolor=plot_battery_color)
-                          )
+                    plt.plot([], color=plot_battery_color, linestyle='', marker=node_marker,
+                             markerfacecolor=node_color,
+                             markeredgewidth=node_marker_edge_width,
+                             markeredgecolor=plot_battery_color)[0]
                 )
 
             if plot_self:
                 legend_labels.append("self")
                 legend_styles.append(
-                    tuple(plt.plot([], color=plot_self_color, linestyle='', marker=node_marker,
-                                   markerfacecolor=node_color, markeredgecolor=plot_self_color)
-                          )
+                    plt.plot([], color=plot_self_color, linestyle='', marker=node_marker,
+                             markerfacecolor=node_color, markeredgecolor=plot_self_color)[0]
                 )
 
             if plot_lost_devices:
                 legend_labels.append(f"lost ({update_delta})")
                 legend_styles.append(
-                    tuple(plt.plot([], color=lost_devices_color, linestyle='', marker=node_marker,
-                                   markeredgewidth=node_marker_edge_width,
-                                   markeredgecolor=lost_devices_color,
-                                   markerfacecolor=node_color)
-                          )
+                    plt.plot([], color=lost_devices_color, linestyle='', marker=node_marker,
+                             markeredgewidth=node_marker_edge_width,
+                             markeredgecolor=lost_devices_color,
+                             markerfacecolor=node_color)[0]
                 )
 
             if plot_no_node:
                 legend_labels.append("no node")
                 legend_styles.append(
-                    tuple(plt.plot([], color=plot_no_node_color, linestyle='', marker='x',
-                                   markerfacecolor=plot_no_node_color)
-                          )
+                    plt.plot([], color=plot_no_node_color, linestyle='', marker='x',
+                             markerfacecolor=plot_no_node_color)[0]
                 )
 
             legend = plt.legend(
@@ -500,7 +493,8 @@ class Plugin(indigo.PluginBase):
                 ncol=1, numpoints=1, prop={'family': font_name, 'size': 6.5}
             )
             legend.get_frame().set_alpha(0)  # Transparent legend background
-            _ = [text.set_color(font_color) for text in legend.get_texts()]  # Side-effect list comp; result discarded
+            for text in legend.get_texts():
+                text.set_color(foreground_color)
 
         # ================== Color labels for neighbors with no node ==================
         # Affects labels on the Y axis.
@@ -588,6 +582,6 @@ class Plugin(indigo.PluginBase):
             indigo.server.log("========== Z-Wave Neighbors List ==========")
             sorted_nodes = sorted(nodes_list, key=lambda x: int(x.split()[1]))
             for node in sorted_nodes:
-                indigo.server.log(f"{node}")  # Print the list regardless of debug logging setting
+                indigo.server.log(node)  # Print the list regardless of debug logging setting
         except Exception as err:
             self.logger.warning("%s", err)

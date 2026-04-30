@@ -16,4 +16,9 @@
         <CallbackMethod>log_plugin_environment</CallbackMethod>
     </Action>
 
+    <Action id="refreshMatrixTest" uiPath="hidden">
+        <Name>Refresh Matrix (Test)</Name>
+        <CallbackMethod>make_the_matrix_test_action</CallbackMethod>
+    </Action>
+
 </Actions>

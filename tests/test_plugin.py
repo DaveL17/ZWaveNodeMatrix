@@ -55,3 +55,8 @@ class TestMenuItems(APIBase):
         """Post a plugin.printEnvironmentInfo command to the Indigo Web Server."""
         result = self._execute_action("log_plugin_environment", msg="test_print_environment_info")
         self.assertEqual(result.status_code, 200, "The print environment info menu item call was not successful.")
+
+    def test_refresh_matrix_test(self):
+        """Post a plugin.refreshMatrixTest command to the Indigo Web Server using dummy data."""
+        result = self._execute_action("refreshMatrixTest", msg="test_refresh_matrix_test")
+        self.assertEqual(result.status_code, 200, "The refresh matrix test action call was not successful.")

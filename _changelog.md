@@ -1,4 +1,7 @@
 ### v2025.2.2
+- Fixes `refreshMatrixTest` action not registered in `Actions.xml`, causing the test matrix generation with dummy data to produce an empty chart.
+- Fixes legend handles stored as tuples of `Line2D` objects rather than `Line2D` objects directly.
+- Removes redundant `font_color` variable (duplicate of `foreground_color`).
 - Fixes unbalanced parenthesis in debug level log message.
 - Fixes `nodeMarkerEdgewidth` pref being passed as string instead of float.
 - Removes dead counter variable from device dictionary build loop.
